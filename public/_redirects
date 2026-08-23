@@ -1,0 +1,25 @@
+# ─────────────────────────────────────────────────────────────
+#  REDIRECT MAP — All About Flooring
+#
+#  RULE: if an old URL has a matching new page, KEEP THE SLUG
+#  (define it in src/routes.jsx) instead of redirecting. A 301
+#  leaks a little ranking signal on every hop. Only list URLs
+#  here that are genuinely being retired or merged.
+#
+#  Fill this in from the Search Console "Pages" export.
+#  Format:  /old-path  /new-path  301
+# ─────────────────────────────────────────────────────────────
+
+# Example retirements (placeholders — delete before launch):
+# /services.html            /services              301
+# /hardwood-floors-old      /hardwood-flooring     301
+# /index.php                /                      301
+
+# Force one canonical host. Must match Hostinger DNS + the GBP website field.
+# http://allaboutflooring.com/*  https://www.allaboutflooring.com/:splat  301!
+
+# NOTE: no SPA fallback here on purpose. vite-react-ssg emits real HTML per
+# route; a catch-all /* -> /index.html would let Google index the homepage
+# under every URL on the site.
+
+/second-location  /locations/top-flooring-companies-st-petersburg  301

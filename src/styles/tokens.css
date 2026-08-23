@@ -1,0 +1,59 @@
+/* ─────────────────────────────────────────────────────────────
+   DESIGN TOKENS - All About Flooring
+
+   Palette sampled directly from the logo artwork:
+     walnut  #5D3F34   the dark plank, the word FLOORING
+     tan     #AE8E76   the light plank, ALL ABOUT / CONTRACTORS
+     ink     #202020   the figure
+
+   Bright treatment: white and warm-bone surfaces throughout, brand
+   browns carried by type, rules and accents rather than by large dark
+   fields. No dark sections.
+   ───────────────────────────────────────────────────────────── */
+:root {
+  /* brand */
+  --walnut: #5d3f34;
+  --walnut-hi: #74513f;
+  --tan: #ae8e76;
+  --tan-hi: #c0a188;
+  --tan-soft: #e6d8cb;
+
+  /* surfaces - "dark" section tokens now resolve to light fields, so
+     every existing rule keeps working against a bright ground */
+  --graphite: #f8f4f0;
+  --graphite-2: #ffffff;
+  --graphite-3: #f1e9e2;
+  --wall: #ffffff;
+  --wall-2: #f8f4f0;
+
+  /* accents mapped onto brand */
+  --oak: #ae8e76;
+  --oak-hi: #c0a188;
+  --oak-deep: #5d3f34;
+  --chalk: #5d3f34;
+  --chalk-lo: #473028;
+
+  /* ink */
+  --ink: #202020;
+  --muted: #6a625b;
+  --grout: #8a7f76;
+
+  /* rules - dark-on-light in both cases now */
+  --line: rgba(32, 32, 32, 0.12);
+  --line-dark: rgba(32, 32, 32, 0.12);
+
+  /* type */
+  /* Headings unchanged. Body switched to Poppins to match the reference.
+     Every component reads these tokens, so swapping the body face is a
+     one-line change here - nothing hard-codes a family. */
+  --f-display: 'Montserrat', system-ui, sans-serif;
+  --f-body: 'Poppins', system-ui, sans-serif;
+  --f-mono: 'Poppins', system-ui, sans-serif;
+
+  /* layout */
+  --pad: clamp(20px, 5vw, 72px);
+  --maxw: 1680px;
+  --radius: 3px;
+  --hdr-h: 84px;
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+}

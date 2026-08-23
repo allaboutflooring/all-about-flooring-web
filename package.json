@@ -1,0 +1,27 @@
+{
+  "name": "all-about-flooring",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "node scripts/check-styles.mjs && vite-react-ssg build && node scripts/postbuild.mjs && node scripts/smoke.mjs",
+    "build:spa": "vite build",
+    "preview": "vite preview",
+    "check": "node scripts/check-styles.mjs",
+    "smoke": "node scripts/smoke.mjs",
+    "media": "node scripts/convert-media.mjs"
+  },
+  "dependencies": {
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "react-router-dom": "^6.30.0",
+    "vite-react-ssg": "^0.9.2"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^5.0.0",
+    "jsdom": "^30.0.1",
+    "sharp": "^0.35.3",
+    "vite": "^7.3.0"
+  }
+}

@@ -1,0 +1,41 @@
+/* ─────────────────────────────────────────────────────────────
+   DESIGN TOKENS — All About Flooring
+
+   Direction: editorial stone. Palette sampled from the material
+   itself — the greige, clay and bone of the floors in the hero
+   footage — so the chrome never competes with the product.
+   Ink is warm near-black, never pure #000.
+   ───────────────────────────────────────────────────────────── */
+:root {
+  /* surfaces */
+  --bone: #faf8f5;
+  --bone-2: #f2eee8;
+  --greige: #e4ded5;
+  --stone: #c9c0b6;
+  --stone-deep: #a2988c;
+
+  /* ink */
+  --ink: #1a1714;
+  --ink-2: #4a443d;
+  --ink-3: #7d766c;
+
+  /* accent — the rust vein that runs through the stone */
+  --clay: #a8724a;
+
+  /* lines */
+  --rule: rgba(26, 23, 20, 0.14);
+  --rule-soft: rgba(26, 23, 20, 0.08);
+  --rule-light: rgba(250, 248, 245, 0.28);
+
+  /* type */
+  --f-display: 'Cormorant Garamond', Georgia, serif;
+  --f-ui: 'Jost', system-ui, sans-serif;
+
+  /* layout */
+  --pad: clamp(20px, 5vw, 68px);
+  --maxw: 1400px;
+  --measure: 1120px;
+
+  /* motion */
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+}
