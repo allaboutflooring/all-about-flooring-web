@@ -20,8 +20,10 @@ export default function Seo({ title, description, path = '/', location, noindex 
     '@id': `${url}#${location.key}`,
     name: location.name,
     legalName: location.legalName,
-    description: SITE.tagline,
+    description: SITE.description,
     url,
+    logo: `${SITE.origin}${SITE.logo}`,
+    image: `${SITE.origin}${SITE.ogImage}`,
     telephone: location.phoneE164,
     email: location.email,
     foundingDate: location.founded,
@@ -59,13 +61,25 @@ export default function Seo({ title, description, path = '/', location, noindex 
       <title>{title}</title>
       <meta name="description" content={description} />
       <link rel="canonical" href={url} />
+      <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+      <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48.png" />
+      <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
       {noindex ? <meta name="robots" content="noindex,follow" /> : null}
+      <meta name="theme-color" content="#5d3f34" />
       <meta property="og:type" content="website" />
-      <meta property="og:site_name" content={SITE.brand} />
+      <meta property="og:site_name" content={SITE.listingName} />
       <meta property="og:title" content={title} />
       <meta property="og:description" content={description} />
       <meta property="og:url" content={url} />
+      <meta property="og:image" content={`${SITE.origin}${SITE.ogImage}`} />
+      <meta property="og:image:width" content="1200" />
+      <meta property="og:image:height" content="630" />
+      <meta property="og:image:alt" content={SITE.listingName} />
       <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:title" content={title} />
+      <meta name="twitter:description" content={description} />
+      <meta name="twitter:image" content={`${SITE.origin}${SITE.ogImage}`} />
+      <meta name="twitter:image:alt" content={SITE.listingName} />
       {location ? <meta name="geo.region" content={location.region} /> : null}
       {location ? <meta name="geo.placename" content={location.city} /> : null}
       {location ? (

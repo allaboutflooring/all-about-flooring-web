@@ -27,8 +27,8 @@ export default function Home() {
       <Seo
         path="/"
         location={MAIN}
-        title={`Flooring Installation, Kitchen & Bathroom Renovation in ${MAIN.city} | All About Flooring`}
-        description={`Hardwood, tile and vinyl flooring installation plus kitchen and bathroom renovation in ${MAIN.city}. Free in-home measure, written estimate in 48 hours. Call ${MAIN.phone}.`}
+        title={`All About Flooring Tampa Bay Contractors | Flooring Installation in ${MAIN.city}`}
+        description={SITE.description}
       />
 
       <HeroVideo
