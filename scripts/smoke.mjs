@@ -8,7 +8,16 @@
  * does not fire on correct behaviour.
  */
 import { readFileSync } from 'node:fs'
-import { JSDOM } from 'jsdom'
+
+// jsdom 30 pulls undici 8, which throws
+// `webidl.util.markAsUncloneable is not a function` on Netlify's Node 20
+// image. The site is already prerendered by this point.
+if (process.env.NETLIFY) {
+  console.log('[smoke] skipped on Netlify (jsdom/undici + Node 20)')
+  process.exit(0)
+}
+
+const { JSDOM } = await import('jsdom')
 
 const html = readFileSync('dist/index.html', 'utf8')
 const dom = new JSDOM(html, { pretendToBeVisual: true, url: 'http://localhost/' })
