@@ -39,12 +39,17 @@ export const MAIN = {
     { days: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'], open: '07:00', close: '17:00' },
     { days: ['Saturday'], open: '08:00', close: '13:00' },
   ],
-  geo: { lat: 27.9506, lng: -82.4572 },
+  geo: { lat: 27.8918945, lng: -82.6262675 },
   mapEmbed:
     'https://maps.google.com/maps?q=All+About+Flooring+Tampa+Bay+Contractors,+Tampa,+FL&z=10&output=embed',
-  mapsShareUrl: 'https://maps.app.goo.gl/uzJA1G8NifCQYu4f9',
-  gbpProfileUrl: 'https://maps.app.goo.gl/uzJA1G8NifCQYu4f9',
-  gbpReviewUrl: '',
+  mapsShareUrl: 'https://maps.app.goo.gl/3RiTe9zUQBCvXxFb6',
+  gbpProfileUrl: 'https://maps.app.goo.gl/3RiTe9zUQBCvXxFb6',
+  placeId: 'ChIJJa3ukc6izU8Rw_oaL_6dD7c',
+  placeCid: '0x4fcda2ce91eead25:0xb70f9dfe2f1afac3',
+  gbpReviewUrl:
+    'https://www.google.com/search?q=All+About+Flooring+Tampa+Bay+Contractors&lrd=0x4fcda2ce91eead25:0xb70f9dfe2f1afac3,1',
+  writeReviewUrl:
+    'https://www.google.com/search?q=All+About+Flooring+Tampa+Bay+Contractors&lrd=0x4fcda2ce91eead25:0xb70f9dfe2f1afac3,3',
   serviceAreas: [
     'Odessa',
     'Carrollwood',
@@ -59,8 +64,9 @@ export const MAIN = {
     'Spring Hill',
     'Riverview',
   ],
-  reviewCount: 0,
-  reviewAverage: 4.9,
+  // Fallback only. Live values come from Places API via /api/google-reviews.
+  reviewCount: 142,
+  reviewAverage: 5.0,
 }
 
 export const SECOND = {
@@ -94,7 +100,11 @@ export const SECOND = {
     'https://maps.google.com/maps?q=2400+13th+Ave+S,+St.+Petersburg,+FL+33712&z=13&output=embed',
   mapsShareUrl: 'https://maps.app.goo.gl/CoHyWqmuxMLeoMcb8',
   gbpProfileUrl: 'https://maps.app.goo.gl/CoHyWqmuxMLeoMcb8',
-  gbpReviewUrl: '',
+  placeCid: '0xedfc062775751b5:0x86c4f67f47e8713',
+  gbpReviewUrl:
+    'https://www.google.com/search?q=ALL+ABOUT+FLOORING+ST.+PETERSBURG&lrd=0xedfc062775751b5:0x86c4f67f47e8713,1',
+  writeReviewUrl:
+    'https://www.google.com/search?q=ALL+ABOUT+FLOORING+ST.+PETERSBURG&lrd=0xedfc062775751b5:0x86c4f67f47e8713,3',
   serviceAreas: [
     'St. Petersburg',
     'St. Pete Beach',
@@ -127,6 +137,23 @@ export const mapsDirectionsUrl = (l) =>
   `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(
     `${l.name} ${fullAddress(l)}`
   )}`
+
+/**
+ * View / write URLs for the Google reviews widget.
+ *
+ * Prefer the listing fields. Fall back to the CID search URLs Google
+ * uses for the reviews panel (`lrd=...,1` read, `lrd=...,3` write).
+ */
+export const googleReviewLinks = (l) => {
+  const q = encodeURIComponent(l.name)
+  const view =
+    l.gbpReviewUrl ||
+    (l.placeCid ? `https://www.google.com/search?q=${q}&lrd=${l.placeCid},1` : l.mapsShareUrl || l.gbpProfileUrl)
+  const write =
+    l.writeReviewUrl ||
+    (l.placeCid ? `https://www.google.com/search?q=${q}&lrd=${l.placeCid},3` : view)
+  return { view, write }
+}
 
 const AREA_PHOTOS = [
   {
