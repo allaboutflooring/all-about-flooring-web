@@ -1,12 +1,13 @@
 /**
  * St. Petersburg listing - own URLs, nav, copy, and cards.
  *
- * Nested under /locations/top-flooring-companies-st-petersburg so the
- * Tampa site keeps its /locations/* town pages. Copy stays Pinellas-
- * specific so this listing does not compete with the Tampa homepage.
+ * Lives at /top-flooring-companies-st-petersburg (the indexed slug from
+ * the old site). Nested under that path so Tampa keeps /locations/*.
+ * Copy stays Pinellas-specific so this listing does not compete with
+ * the Tampa homepage.
  */
 
-export const STPETE_BASE = '/locations/top-flooring-companies-st-petersburg'
+export const STPETE_BASE = '/top-flooring-companies-st-petersburg'
 
 const svc = (path) => `${STPETE_BASE}/services/${path}`
 const loc = (path) => `${STPETE_BASE}/locations/${path}`

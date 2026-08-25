@@ -22,4 +22,6 @@
 # route; a catch-all /* -> /index.html would let Google index the homepage
 # under every URL on the site.
 
-/second-location  /locations/top-flooring-companies-st-petersburg  301
+/second-location  /top-flooring-companies-st-petersburg  301
+/locations/top-flooring-companies-st-petersburg/*  /top-flooring-companies-st-petersburg/:splat  301
+/locations/top-flooring-companies-st-petersburg  /top-flooring-companies-st-petersburg  301
