@@ -18,7 +18,7 @@ export const SERVICES = [
     img: '/img/services/kitchen-renovation.jpg',
     alt: 'A honed stone kitchen worktop',
     tex: 'porcelain',
-    title: 'Kitchen Backsplash Installation',
+    title: 'Kitchen Design and Installation',
     body:
       'Full gut or a targeted refresh. Cabinetry, countertops, backsplash and flooring sequenced so the room is out of use for days, not months.',
     tags: ['Cabinet install', 'Countertops', 'Backsplash tile', 'Under-cabinet lighting'],
@@ -85,6 +85,72 @@ export const PROCESS = [
  */
 export const WORK = [
   {
+    key: 'white-l-kitchen-black-hardware',
+    tag: 'Kitchens',
+    orient: 'land',
+    webp: true,
+    category: 'Kitchen Design and Installation',
+    title: 'White Shaker L-kitchen, black hardware',
+    meta: 'White Shaker · quartz tops · matte black pulls',
+    alt: 'L-shaped kitchen with white Shaker cabinets, black hardware, stainless appliances, white quartz counters and light wood-look flooring',
+    href: null,
+  },
+  {
+    key: 'white-kitchen-wood-shelves',
+    tag: 'Kitchens',
+    orient: 'land',
+    webp: true,
+    category: 'Kitchen Design and Installation',
+    title: 'White kitchen with wood floating shelves',
+    meta: 'White Shaker · herringbone splash · wood shelves',
+    alt: 'White Shaker kitchen with stainless appliances, speckled quartz counters, herringbone tile backsplash and dark wood floating shelves',
+    href: null,
+  },
+  {
+    key: 'grey-shaker-pantry-cabinets',
+    tag: 'Kitchens',
+    orient: 'port',
+    webp: true,
+    category: 'Cabinet & Countertop Design and Installation',
+    title: 'Floor-to-ceiling grey Shaker pantry',
+    meta: 'Grey Shaker · gold pulls · quartz top',
+    alt: 'Floor-to-ceiling light grey Shaker pantry cabinets with slim gold pulls beside a white quartz countertop and wood-look plank flooring',
+    href: null,
+  },
+  {
+    key: 'navy-bar-forest-mural',
+    tag: 'Kitchens',
+    orient: 'port',
+    webp: true,
+    category: 'Cabinet & Countertop Design and Installation',
+    title: 'Navy bar cabinets, forest mural',
+    meta: 'Navy Shaker · quartz top · gold pulls',
+    alt: 'Navy Shaker home bar with gold pulls, white quartz counter, wood floating shelves, a forest mural backsplash and two under-counter beverage coolers',
+    href: null,
+  },
+  {
+    key: 'oak-double-vanity-cabinets',
+    tag: 'Bathrooms',
+    orient: 'port',
+    webp: true,
+    category: 'Cabinet & Countertop Design and Installation',
+    title: 'Oak double vanity, quartz top',
+    meta: 'Light oak Shaker · white quartz · matte black pulls',
+    alt: 'Bathroom double vanity in light oak Shaker cabinets with a white quartz top, two undermount sinks, black oval mirrors and wood-look floor tile',
+    href: null,
+  },
+  {
+    key: 'white-laundry-vanity-cabinets',
+    tag: 'Laundry',
+    orient: 'port',
+    webp: true,
+    category: 'Cabinet & Countertop Design and Installation',
+    title: 'White laundry vanity, marble top',
+    meta: 'White Shaker · marble-look quartz · brass pulls',
+    alt: 'Laundry vanity in white Shaker cabinets with a light grey marble-look counter, stainless undermount sink, brass pulls and a round wood-framed mirror',
+    href: null,
+  },
+  {
     key: 'freestanding-tub',
     tag: 'Bathrooms',
     orient: 'port',
@@ -98,7 +164,7 @@ export const WORK = [
     key: 'white-shaker-kitchen',
     tag: 'Kitchens',
     orient: 'port',
-    category: 'Kitchen Backsplash Installation',
+    category: 'Kitchen Design and Installation',
     title: 'White Shaker kitchen, marble mosaic',
     meta: 'Shaker cabinets · marble subway mosaic · under-cabinet lighting',
     alt: 'White Shaker kitchen with marble mosaic backsplash, black hardware and stainless appliances',
@@ -118,7 +184,7 @@ export const WORK = [
     key: 'farmhouse-range-kitchen',
     tag: 'Kitchens',
     orient: 'port',
-    category: 'Kitchen Backsplash Installation',
+    category: 'Kitchen Design and Installation',
     title: 'Farmhouse kitchen with wood hood',
     meta: 'White Shaker · rustic stone backsplash · custom wood range hood',
     alt: 'Long white kitchen with stone mosaic backsplash, wood range hood and wide-plank wood flooring',
@@ -158,7 +224,7 @@ export const WORK = [
     key: 'navy-backsplash-kitchen',
     tag: 'Kitchens',
     orient: 'port',
-    category: 'Kitchen Backsplash Installation',
+    category: 'Kitchen Design and Installation',
     title: 'Navy subway backsplash kitchen',
     meta: 'Navy ceramic subway · white Shaker · gold hardware',
     alt: 'Kitchen with a navy subway-tile backsplash, white Shaker cabinets, marble counters and gold fixtures',
@@ -178,7 +244,7 @@ export const WORK = [
     key: 'kitchen-backsplash-subway',
     tag: 'Kitchens',
     orient: 'port',
-    category: 'Kitchen Backsplash Installation',
+    category: 'Kitchen Design and Installation',
     title: 'Grey subway backsplash, brass fittings',
     meta: 'Gloss subway · grey Shaker · brass faucet and pulls',
     alt: 'Kitchen corner with a light grey subway-tile backsplash, grey cabinets, white quartz and a brass gooseneck faucet',
@@ -188,7 +254,7 @@ export const WORK = [
     key: 'dark-kitchen-bronze-glass',
     tag: 'Kitchens',
     orient: 'port',
-    category: 'Kitchen Backsplash Installation',
+    category: 'Kitchen Design and Installation',
     title: 'Charcoal kitchen, bronze glass subway',
     meta: 'Dark Shaker · bronze glass subway · wood-look plank',
     alt: 'Kitchen with charcoal Shaker cabinets, bronze glass subway backsplash, light granite and wood-look plank flooring',
@@ -308,7 +374,7 @@ export const WORK = [
     key: 'white-island-kitchen',
     tag: 'Kitchens',
     orient: 'port',
-    category: 'Kitchen Backsplash Installation',
+    category: 'Kitchen Design and Installation',
     title: 'White Shaker kitchen with island',
     meta: 'White Shaker · quartz island · wood-look plank',
     alt: 'Open kitchen with white Shaker cabinets, a quartz island with a nickel faucet, stainless appliances and wood-look plank flooring',
@@ -348,7 +414,7 @@ export const WORK = [
     key: 'wood-wetbar-wine-cooler',
     tag: 'Kitchens',
     orient: 'port',
-    category: 'Kitchen Backsplash Installation',
+    category: 'Kitchen Design and Installation',
     title: 'Wood wet bar, marble slab splash',
     meta: 'Natural wood Shaker · full-height marble · wine cooler',
     alt: 'Kitchen wet bar with light wood Shaker cabinets, matching marble counter and full-height backsplash, and a built-in wine cooler',
@@ -378,7 +444,7 @@ export const WORK = [
     key: 'waterfall-island-kitchen',
     tag: 'Kitchens',
     orient: 'port',
-    category: 'Kitchen Backsplash Installation',
+    category: 'Kitchen Design and Installation',
     title: 'Waterfall-edge marble island',
     meta: 'Marble waterfall · dark island base · wood-look tile',
     alt: 'Long kitchen island with a white marble waterfall counter, dark base cabinets, stainless appliances and wood-look floor tile',
@@ -388,7 +454,7 @@ export const WORK = [
     key: 'navy-island-open-kitchen',
     tag: 'Kitchens',
     orient: 'land',
-    category: 'Kitchen Backsplash Installation',
+    category: 'Kitchen Design and Installation',
     title: 'Navy island in an open kitchen',
     meta: 'Dark island · marble tops · wood-look plank',
     alt: 'Open-plan kitchen with a dark navy island, marble counters, wood-look flooring and a stainless range wall behind',
@@ -398,7 +464,7 @@ export const WORK = [
     key: 'forest-mural-bar',
     tag: 'Kitchens',
     orient: 'port',
-    category: 'Kitchen Backsplash Installation',
+    category: 'Kitchen Design and Installation',
     title: 'Dark bar with forest mural',
     meta: 'Charcoal Shaker · wood shelves · gold pulls',
     alt: 'Custom home bar in matte charcoal cabinets with gold pulls, wood floating shelves, a forest mural backsplash and two beverage coolers',
@@ -408,7 +474,7 @@ export const WORK = [
     key: 'wood-range-kitchen',
     tag: 'Kitchens',
     orient: 'port',
-    category: 'Kitchen Backsplash Installation',
+    category: 'Kitchen Design and Installation',
     title: 'Warm wood kitchen, marble splash',
     meta: 'Wood Shaker · full-height marble · gold pulls',
     alt: 'Straight-run kitchen in warm wood Shaker cabinets with a marble counter and full-height backsplash, stainless range and matching fridge surround',
@@ -425,6 +491,28 @@ export const WORK = [
     href: null,
   },
 ]
+
+/** Filter labels, same order on the homepage and the portfolio page. */
+export const WORK_FILTERS = ['Bathrooms', 'Kitchens', 'Floors', 'Laundry']
+
+/**
+ * Homepage teaser: two portrait shots from each filter, plus one extra
+ * kitchen so the grid fills three columns. Interleaved so it is not a
+ * block of one room type.
+ */
+const HOME_WORK_KEYS = [
+  'white-island-kitchen',
+  'freestanding-tub',
+  'character-hickory-floor',
+  'laundry-gold-hardware',
+  'waterfall-island-kitchen',
+  'geometric-feature-shower',
+  'hardwood-living-teal-door',
+  'laundry-stacked-washer',
+  'navy-backsplash-kitchen',
+]
+
+export const HOME_WORK = HOME_WORK_KEYS.map((key) => WORK.find((w) => w.key === key))
 
 // Placeholder copy. Swap for the live GBP review feed - never hand-write
 // testimonials that are attributed to real named people.
@@ -457,6 +545,8 @@ export const SERVICE_OPTIONS = [
   'Floor Sanding & Polyurethane Coating',
   'Tile Installation',
   'Bathroom Tile & Backsplash Installation',
+  'Kitchen Design and Installation',
+  'Cabinet & Countertop Design and Installation',
 ]
 
 /**
@@ -513,5 +603,17 @@ export const SERVICE_CARDS = [
     title: 'Bathroom Tile & Backsplash Installation',
     body: 'Waterproof membrane to spec before any tile goes on. Niches cut to the tile module, so nothing lands on a sliver and nothing leaks in five years.',
     href: '/services/bathroom-tile-backsplash-installation',
+  },
+  {
+    key: 'kitchen',
+    title: 'Kitchen Design and Installation',
+    body: 'Cabinets, countertops, backsplash and flooring sequenced as one job. Full gut or a targeted refresh, with the same crew that does the floor.',
+    href: '/services/kitchen-design-and-installation',
+  },
+  {
+    key: 'cabinets',
+    title: 'Cabinet & Countertop Design and Installation',
+    body: 'Kitchen, bath, laundry and bar cabinets with quartz or granite tops. Templated after the boxes are set, hardware and cut-outs in the written price.',
+    href: '/services/cabinet-and-countertop-design-and-installation',
   },
 ]

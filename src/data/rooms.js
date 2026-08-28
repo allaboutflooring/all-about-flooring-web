@@ -84,8 +84,8 @@ export const ROOMS = [
     markers: [
       {
         n: '02',
-        title: 'Backsplash Installation',
-        body: 'Kitchen backsplash tile installed for a clean, finished look.',
+        title: 'Kitchen Design and Installation',
+        body: 'Kitchen design and installation for a clean, finished look.',
         icon: 'tiles',
         tone: 'light',
         pin: 'left',

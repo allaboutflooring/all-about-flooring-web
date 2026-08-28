@@ -13,7 +13,7 @@ import Faqs from '../components/Faqs'
 import ServiceArea from '../components/ServiceArea'
 import { MAIN } from '../data/locations'
 import { CTA_MID, CTA_LATE } from '../data/cta'
-import { WORK } from '../data/content'
+import { HOME_WORK } from '../data/content'
 import { ABOUT_PATH, SITE } from '../data/site'
 
 /**
@@ -65,7 +65,7 @@ export default function Home() {
 
       <About moreHref={ABOUT_PATH} />
 
-      <Work projects={WORK.slice(0, 9)} moreHref="/portfolio" />
+      <Work projects={HOME_WORK} moreHref="/portfolio" />
 
       <Cta content={CTA_LATE} location={MAIN} />
 

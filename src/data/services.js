@@ -255,6 +255,72 @@ export const SERVICE_PAGES = {
     ],
   }),
 
+  kitchen: page({
+    key: 'kitchen',
+    path: '/services/kitchen-design-and-installation',
+    title: 'Kitchen Design and Installation',
+    heroTitle: 'Kitchen Design',
+    crumb: 'Kitchen Design',
+    navLabel: 'Kitchen Design and Installation',
+    workKey: 'white-shaker-kitchen',
+    webp: true,
+    alt: 'White Shaker kitchen with marble mosaic backsplash, black hardware and stainless appliances',
+    description:
+      'Kitchen design and installation in Tampa. Cabinets, countertops, backsplash and flooring sequenced by one crew. Free in-home measure.',
+    tick: 'Kitchens, start to finish',
+    heading: 'The whole kitchen, sequenced so you are not waiting on three trades.',
+    body: [
+      'Cabinets, countertops, backsplash and the floor that runs through the room. We design the layout, write one itemised price, and install in an order that keeps the kitchen down for days, not months.',
+      'Full gut or a targeted refresh. Hardware, appliances and lighting are planned with the cabinets so nothing is left as a leftover for a second company. Same crew that does the floor - so the plank, the grout and the toe-kick actually meet.',
+    ],
+    pointsTick: 'What you get',
+    pointsHeading: 'A kitchen install that is one job, not a pile of quotes.',
+    pointsBody: [
+      'The cabinets are only half the room. Tops, splash, flooring and the gaps between them are where a kitchen either lands or looks like three different contractors passed through.',
+    ],
+    points: [
+      'Cabinet design and installation',
+      'Quartz, granite and solid-surface tops',
+      'Backsplash tile laid out around outlets and the range',
+      'Flooring sequenced with the cabinets',
+      SHARED_POINTS.crew,
+      SHARED_POINTS.price,
+    ],
+  }),
+
+  cabinets: page({
+    key: 'cabinets',
+    path: '/services/cabinet-and-countertop-design-and-installation',
+    title: 'Cabinet & Countertop Design and Installation',
+    heroTitle: 'Cabinets & Countertops',
+    crumb: 'Cabinets & Countertops',
+    navLabel: 'Cabinet & Countertop Design',
+    workKey: 'oak-double-vanity-cabinets',
+    webp: true,
+    alt: 'Bathroom double vanity in light oak Shaker cabinets with a white quartz top and black oval mirrors',
+    description:
+      'Cabinet and countertop design and installation in Tampa. Kitchens, baths, laundry and bars - Shaker cabinets and quartz tops, one crew. Free in-home measure.',
+    tick: 'Cabinets and tops',
+    heading: 'Cabinets and countertops measured, set, and finished by the same people.',
+    body: [
+      'Kitchens, bathroom vanities, laundry rooms and built-in bars. We design the cabinet layout, install the boxes and doors, and template the tops so the stone actually fits the run you signed for.',
+      'Shaker, slab and custom paint or stain. Quartz, granite and marble-look surfaces. Hardware, sinks and cut-outs are in the written price - not extras the week the tops arrive.',
+    ],
+    pointsTick: 'What you get',
+    pointsHeading: 'Boxes, doors and tops that belong to one job.',
+    pointsBody: [
+      'A cabinet install fails at the scribe, the filler and the top. We own those details so you are not coordinating a cabinet shop and a fabricator yourself.',
+    ],
+    points: [
+      'Kitchen, bath, laundry and bar cabinets',
+      'Quartz, granite and solid-surface countertops',
+      'Hardware, sinks and cut-outs in the written price',
+      'Templated tops after the cabinets are set',
+      SHARED_POINTS.crew,
+      SHARED_POINTS.measure,
+    ],
+  }),
+
   installation: page({
     inNav: false,
     key: 'hardwood',

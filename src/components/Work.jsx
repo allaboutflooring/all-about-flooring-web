@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import SectionHead from './SectionHead'
 import { Arrow } from './Icons'
-import { WORK } from '../data/content'
+import { WORK, WORK_FILTERS } from '../data/content'
 
 const SIZES = '(max-width: 640px) 92vw, (max-width: 980px) 46vw, 31vw'
 const ROWS = 3
@@ -9,40 +9,33 @@ const ROWS = 3
 /**
  * Portfolio - filtered gallery.
  *
- * Each tile keeps the photograph’s native orientation (`port` or `land`)
- * so a vertical shot is never cropped into a landscape cell, and vice
- * versa. Filters unmount non-matching tiles so the grid reflows; the live
- * region announces the count after each change.
- *
- * The grid opens on the first three rows. Load more adds another three
- * rows at the current column count (3 / 2 / 1).
+ * Portrait tiles only. Horizontal shots stay out of the grid so every
+ * cell is a 3:4 photograph. Filters match the portfolio page everywhere
+ * this component is used.
  */
 function Tile({ w }) {
   const Wrapper = w.href ? 'a' : 'div'
   const base = `/img/work/${w.key}`
-  const land = w.orient === 'land'
 
   return (
-    <figure className={`wk ${land ? 'is-land' : 'is-port'}`}>
+    <figure className="wk is-port">
       <Wrapper className="wk-in" {...(w.href ? { href: w.href } : {})}>
         <span className="wk-img">
           <span className="wk-lift" aria-hidden="true" />
           <span className="wk-tint" aria-hidden="true" />
           <picture>
-            {w.webp && (
-              <source
-                type="image/webp"
-                srcSet={`${base}-800.webp 800w, ${base}-1200.webp 1200w`}
-                sizes={SIZES}
-              />
-            )}
+            <source
+              type="image/webp"
+              srcSet={`${base}-800.webp 800w, ${base}-1200.webp 1200w`}
+              sizes={SIZES}
+            />
             <img
               src={`${base}-1200.jpg`}
               srcSet={`${base}-800.jpg 800w, ${base}-1200.jpg 1200w`}
               sizes={SIZES}
               alt={w.alt || w.title}
-              width={land ? 1600 : 1200}
-              height={land ? 1200 : 1600}
+              width={1200}
+              height={1600}
               loading="lazy"
               decoding="async"
             />
@@ -78,15 +71,7 @@ function useGalleryCols() {
 }
 
 function takeRows(items, cols, rows) {
-  const budget = cols * rows
-  const out = []
-  let used = 0
-  for (const item of items) {
-    if (used >= budget) break
-    out.push(item)
-    used += item.orient === 'land' && cols > 1 ? 2 : 1
-  }
-  return out
+  return items.slice(0, cols * rows)
 }
 
 export default function Work({
@@ -98,14 +83,15 @@ export default function Work({
   moreLabel = 'See all work',
   paged = false,
 }) {
-  const tags = useMemo(
-    () => ['Show All', ...new Set(projects.map((p) => p.tag).filter(Boolean))],
+  const items = useMemo(
+    () => projects.filter((p) => p.orient !== 'land'),
     [projects]
   )
+  const tags = useMemo(() => ['Show All', ...WORK_FILTERS], [])
   const cols = useGalleryCols()
   const [active, setActive] = useState('Show All')
   const [pages, setPages] = useState(1)
-  const matched = active === 'Show All' ? projects : projects.filter((p) => p.tag === active)
+  const matched = active === 'Show All' ? items : items.filter((p) => p.tag === active)
   const shown = paged ? takeRows(matched, cols, ROWS * pages) : matched
   const hasMore = paged && shown.length < matched.length
 

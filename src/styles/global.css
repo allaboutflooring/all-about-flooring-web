@@ -1805,9 +1805,16 @@ main > .sec:first-child { padding-top: calc(var(--hdr-h) + var(--hdr-top) + clam
    broke to three lines; 1560px gives roughly 60px more per card. */
 .svcx-sec .wrap { max-width: 1560px; }
 .svcx-intro { text-align: center; max-width: 62ch; margin: -22px auto clamp(34px, 4vw, 52px); color: var(--muted); font-size: 17px; }
-.svcx-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
-
+.svcx-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 16px;
+}
 .svcx {
+  flex: 0 0 calc((100% - 48px) / 4);
+  max-width: calc((100% - 48px) / 4);
+  box-sizing: border-box;
   position: relative; overflow: hidden; background: var(--wall-2);
   border: 1px solid rgba(32, 32, 32, 0.07);
   min-height: 288px; isolation: isolate; cursor: pointer;
@@ -1817,6 +1824,10 @@ main > .sec:first-child { padding-top: calc(var(--hdr-h) + var(--hdr-top) + clam
               transform 1.35s cubic-bezier(0.19, 1, 0.22, 1),
               box-shadow .3s var(--ease);
   transition-delay: var(--d, 0ms);
+}
+.svcx-grid.is-3 .svcx {
+  flex-basis: calc((100% - 32px) / 3);
+  max-width: calc((100% - 32px) / 3);
 }
 .svcx.is-in { clip-path: inset(0); transform: none; }
 .svcx:hover { box-shadow: 0 22px 50px rgba(32,26,18,.22); }
@@ -1890,9 +1901,26 @@ main > .sec:first-child { padding-top: calc(var(--hdr-h) + var(--hdr-top) + clam
   .svcx { clip-path: none; transform: none; }
   .svcx-bg img { transition: none; }
 }
-@media (max-width: 1240px) { .svcx-grid { grid-template-columns: repeat(3, 1fr); } }
-@media (max-width: 1000px) { .svcx-grid { grid-template-columns: repeat(2, 1fr); } .svcx { --d: 0ms !important; } }
-@media (max-width: 620px)  { .svcx-grid { grid-template-columns: 1fr; } .svcx { min-height: 0; } }
+@media (max-width: 1240px) {
+  .svcx-grid .svcx,
+  .svcx-grid.is-3 .svcx {
+    flex-basis: calc((100% - 32px) / 3);
+    max-width: calc((100% - 32px) / 3);
+  }
+}
+@media (max-width: 1000px) {
+  .svcx-grid .svcx,
+  .svcx-grid.is-3 .svcx {
+    flex-basis: calc((100% - 16px) / 2);
+    max-width: calc((100% - 16px) / 2);
+  }
+  .svcx { --d: 0ms !important; }
+}
+@media (max-width: 620px)  {
+  .svcx-grid .svcx,
+  .svcx-grid.is-3 .svcx { flex-basis: 100%; max-width: 100%; }
+  .svcx { min-height: 0; }
+}
 
 /* service areas - single combined list */
 .svca-areas {

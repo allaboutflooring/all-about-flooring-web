@@ -11,7 +11,7 @@ import Faqs from '../components/Faqs'
 import ServiceArea from '../components/ServiceArea'
 import { SECOND } from '../data/locations'
 import { CTA_MID, CTA_LATE } from '../data/cta'
-import { WORK } from '../data/content'
+import { HOME_WORK } from '../data/content'
 import {
   STPETE_BASE,
   STPETE_SERVICE_CARDS,
@@ -86,7 +86,7 @@ export default function SecondLocation() {
 
       <About content={STPETE_ABOUT} />
 
-      <Work projects={WORK.slice(0, 9)} heading="Recent" accent="work" />
+      <Work projects={HOME_WORK} heading="Recent" accent="work" />
 
       <Cta content={CTA_LATE} location={SECOND} />
 

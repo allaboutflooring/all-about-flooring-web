@@ -146,6 +146,42 @@ export const STPETE_SERVICE_PAGES = {
       'Tile installers for St. Petersburg showers, bathroom floors and kitchen backsplashes. Waterproof membrane before any tile, niches cut to the module, outlets and the range planned into the layout.',
   }),
 
+  kitchen: service({
+    key: 'kitchen',
+    path: svc('kitchen-design-and-installation'),
+    title: 'Kitchen Design and Installation',
+    heroTitle: 'Kitchen Design',
+    crumb: 'Kitchen Design',
+    navLabel: 'Kitchen Design and Installation',
+    workKey: 'white-shaker-kitchen',
+    webp: true,
+    alt: 'White Shaker kitchen with marble mosaic backsplash, black hardware and stainless appliances',
+    tick: 'Kitchens, start to finish',
+    heading: 'The whole kitchen, sequenced so you are not waiting on three trades.',
+    description:
+      'Kitchen design and installation in St. Petersburg. Cabinets, countertops, backsplash and flooring sequenced by one crew. Free in-home measure.',
+    intro:
+      'Cabinets, countertops, backsplash and the floor that runs through a St. Petersburg kitchen. We design the layout, write one itemised price, and install in an order that keeps the room down for days, not months.',
+  }),
+
+  cabinets: service({
+    key: 'cabinets',
+    path: svc('cabinet-and-countertop-design-and-installation'),
+    title: 'Cabinet & Countertop Design and Installation',
+    heroTitle: 'Cabinets & Countertops',
+    crumb: 'Cabinets & Countertops',
+    navLabel: 'Cabinet & Countertop Design',
+    workKey: 'oak-double-vanity-cabinets',
+    webp: true,
+    alt: 'Bathroom double vanity in light oak Shaker cabinets with a white quartz top and black oval mirrors',
+    tick: 'Cabinets and tops',
+    heading: 'Cabinets and countertops measured, set, and finished by the same people.',
+    description:
+      'Cabinet and countertop design and installation in St. Petersburg. Kitchens, baths, laundry and bars - Shaker cabinets and quartz tops, one crew. Free in-home measure.',
+    intro:
+      'Kitchens, bathroom vanities, laundry rooms and built-in bars in St. Petersburg. We design the cabinet layout, install the boxes and doors, and template the tops so the stone fits the run you signed for.',
+  }),
+
   tileCompany: service({
     inNav: false,
     key: 'tile',
@@ -225,6 +261,18 @@ export const STPETE_SERVICE_CARDS = [
     title: 'Bathroom Tile & Backsplash Installation',
     body: 'Waterproof membrane before any tile. Showers, niches and kitchen backsplashes by the same crew that does the floor.',
     href: STPETE_SERVICE_PAGES.bathroom.path,
+  },
+  {
+    key: 'kitchen',
+    title: 'Kitchen Design and Installation',
+    body: 'Cabinets, countertops, backsplash and flooring sequenced as one St. Petersburg job. Full gut or a targeted refresh, same crew as the floor.',
+    href: STPETE_SERVICE_PAGES.kitchen.path,
+  },
+  {
+    key: 'cabinets',
+    title: 'Cabinet & Countertop Design and Installation',
+    body: 'Kitchen, bath, laundry and bar cabinets with quartz or granite tops. Templated after the boxes are set, hardware and cut-outs in the written price.',
+    href: STPETE_SERVICE_PAGES.cabinets.path,
   },
 ]
 

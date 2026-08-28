@@ -59,6 +59,21 @@ export const IconBathroom = () => (
     <path d="M30 8h10v10H30zM35 13h.01" />
   </g></S>
 )
+export const IconKitchen = () => (
+  <S><g {...p}>
+    <path d="M6 22h36v18H6z" />
+    <path d="M6 22V12h14v10M26 12h16v10" />
+    <path d="M20 22v18M13 28h4M31 28h6" />
+  </g></S>
+)
+export const IconCabinets = () => (
+  <S><g {...p}>
+    <rect x="6" y="6" width="16" height="36" rx="1.5" />
+    <rect x="26" y="20" width="16" height="22" rx="1.5" />
+    <path d="M6 18h16M26 28h16" />
+    <path d="M14 12v4M14 24v4M34 32v4" />
+  </g></S>
+)
 
 export const SERVICE_ICONS = {
   lvp: IconLvp,
@@ -69,4 +84,6 @@ export const SERVICE_ICONS = {
   sanding: IconSanding,
   tile: IconTile,
   bathroom: IconBathroom,
+  kitchen: IconKitchen,
+  cabinets: IconCabinets,
 }

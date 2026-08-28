@@ -11,7 +11,7 @@ import { SERVICE_ICONS } from './ServiceIcons'
  * palette. Touch has no hover, so a tap toggles the same wash. The
  * oversized index numeral sits behind the copy.
  */
-function Card({ s, i, open, onToggle }) {
+function Card({ s, i, cols = 4, open, onToggle }) {
   const Icon = SERVICE_ICONS[s.key]
   const ref = useRef(null)
   const [inView, setInView] = useState(false)
@@ -59,7 +59,7 @@ function Card({ s, i, open, onToggle }) {
     <article
       className={`svcx${inView ? ' is-in' : ''}${open ? ' is-on' : ''}`}
       ref={ref}
-      style={{ '--d': `${(i % 4) * 80}ms` }}
+      style={{ '--d': `${(i % cols) * 80}ms` }}
       onClick={tap}
     >
       <picture className="svcx-bg" aria-hidden="true">
@@ -96,6 +96,7 @@ export default function Services({
   showHead = true,
 }) {
   const [open, setOpen] = useState(null)
+  const cols = items.length % 3 === 0 && items.length % 4 !== 0 ? 3 : 4
 
   return (
     <section className="sec svcx-sec" id="services">
@@ -107,12 +108,13 @@ export default function Services({
         )}
         {intro && <p className="svcx-intro">{intro}</p>}
 
-        <div className="svcx-grid">
+        <div className={`svcx-grid${cols === 3 ? ' is-3' : ''}`}>
           {items.map((s, i) => (
             <Card
               key={s.key}
               s={s}
               i={i}
+              cols={cols}
               open={open === s.key}
               onToggle={(key) => setOpen((cur) => (cur === key ? null : key))}
             />
