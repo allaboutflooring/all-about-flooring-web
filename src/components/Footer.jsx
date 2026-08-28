@@ -33,7 +33,7 @@ export default function Footer({
           </div>
 
           <div>
-            <h4>Services</h4>
+            <p className="ftr-h">Services</p>
             <ul>
               {services.map((s) => (
                 <li key={s.href}>
@@ -44,7 +44,7 @@ export default function Footer({
           </div>
 
           <div>
-            <h4>{second ? 'Locations' : 'Company'}</h4>
+            <p className="ftr-h">{second ? 'Locations' : 'Company'}</p>
             <ul>
               {(second && areaLinks ? areaLinks : nav).map((n) => (
                 <li key={n.href}><a href={n.href}>{n.label}</a></li>
@@ -53,7 +53,7 @@ export default function Footer({
           </div>
 
           <div>
-            <h4>{location.isPrimary ? 'Main location' : `${location.city} location`}</h4>
+            <p className="ftr-h">{location.isPrimary ? 'Main location' : `${location.city} location`}</p>
             <address className="ftr-nap">
               {location.street ? (
                 <>

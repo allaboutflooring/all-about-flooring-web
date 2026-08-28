@@ -132,9 +132,13 @@ section[id] { scroll-margin-top: 96px; }
 .mob-sub { padding: 4px 0 12px; }
 
 .hero-media { position: absolute; inset: 0; }
+.hero-media picture,
 .hero-media video, .hero-media img.poster {
   width: 100%; height: 100%; object-fit: cover; display: block;
 }
+.hero-media picture { position: absolute; inset: 0; }
+.hero-media video { position: absolute; inset: 0; opacity: 0; transition: opacity 0.45s ease; }
+.hero-media video.is-on { opacity: 1; }
 /* Scrim weighted toward the copy side so the type stays legible without
    flattening the material. */
 .hero-scrim {
@@ -164,20 +168,20 @@ section[id] { scroll-margin-top: 96px; }
 }
 .hero-acts { margin-top: 42px; display: flex; flex-wrap: wrap; gap: 14px; }
 
-/* staged entrance - clip unveil, not a plain fade */
+/* staged entrance - opacity + transform so the animation stays composited */
 .hero-copy > * {
-  clip-path: inset(0 0 100% 0);
-  transform: translate3d(0, 28px, 0);
-  animation: hero-unveil 1.45s cubic-bezier(0.19, 1, 0.22, 1) both;
+  opacity: 0;
+  transform: translate3d(0, 20px, 0);
+  animation: hero-unveil 1.15s cubic-bezier(0.19, 1, 0.22, 1) both;
 }
 .hero-copy > *:nth-child(1) { animation-delay: 0.06s; }
 .hero-copy > *:nth-child(2) { animation-delay: 0.16s; }
 .hero-copy > *:nth-child(3) { animation-delay: 0.42s; }
 .hero-copy > *:nth-child(4) { animation-delay: 0.58s; }
-.hero-copy h1 { clip-path: none; transform: none; animation: none; }
-@keyframes hero-unveil { to { clip-path: inset(0); transform: none; } }
+.hero-copy h1 { opacity: 1; transform: none; animation: none; }
+@keyframes hero-unveil { to { opacity: 1; transform: none; } }
 @media (prefers-reduced-motion: reduce) {
-  .hero-copy > * { clip-path: none; transform: none; animation: none; }
+  .hero-copy > * { opacity: 1; transform: none; animation: none; }
 }
 
 /* video controls */
@@ -563,7 +567,7 @@ section[id] { scroll-margin-top: 96px; }
 .shead h2 { position: relative; z-index: 1; font-size: clamp(30px, 4.2vw, 52px); color: var(--ink); max-width: 22ch; margin-inline: auto; line-height: 1.14; }
 .sec-hd h2 { max-width: 22ch; }
 .wks-top .shead h2 { margin-inline: 0; }
-.shead h2 em { font-style: normal; color: var(--oak); }
+.shead h2 em { font-style: normal; color: var(--walnut); }
 .shead-rule { display: block; width: 78px; height: 2px; background: var(--oak); margin: 22px auto 0; }
 .shead-rule::before { content: ''; display: block; width: 8px; height: 2px; background: var(--oak); margin-left: -16px; }
 
@@ -1044,7 +1048,7 @@ h1, h2, h3, h4 { font-family: var(--f-display); font-variation-settings: 'wdth' 
    token behind it resolves to a light bone - so if the video ever fails
    to paint, white on light is an invisible hero. This guarantees a ground. */
 .hero {
-  background: var(--graphite) url('/img/hero-poster.jpg') center / cover no-repeat;
+  background: #1c1a18;
   color: var(--wall); position: relative; overflow: hidden;
 }
 .hero-top { max-width: var(--maxw); margin: 0 auto; padding: clamp(48px, 7vw, 84px) var(--pad) 0; display: grid; grid-template-columns: 1.35fr 0.85fr; gap: clamp(28px, 5vw, 64px); align-items: end; }
@@ -1162,7 +1166,7 @@ html.nav-open body {
 .ftr { background: var(--graphite); color: var(--wall); padding: clamp(52px, 6vw, 76px) 0 0; }
 .ftr--second { background: var(--walnut); }
 .ftr-grid { display: grid; grid-template-columns: 1.5fr 1fr 1fr 1.2fr; gap: clamp(22px, 3vw, 44px); }
-.ftr h4 { font-family: var(--f-mono); font-size: 10.5px; letter-spacing: 0.17em; text-transform: uppercase; color: var(--grout); font-weight: 500; margin-bottom: 16px; }
+.ftr-h { font-family: var(--f-mono); font-size: 10.5px; letter-spacing: 0.17em; text-transform: uppercase; color: var(--grout); font-weight: 500; margin-bottom: 16px; }
 .ftr ul { margin: 0; padding: 0; list-style: none; }
 .ftr li { margin-bottom: 10px; }
 .ftr a { color: var(--muted); text-decoration: none; font-size: 15px; }
@@ -1224,13 +1228,25 @@ html.nav-open body {
 .hero {
   position: relative; overflow: hidden;
   min-height: 100svh;
-  background: var(--graphite) url('/img/hero-poster.jpg') center / cover no-repeat;
+  background: #1c1a18;
 }
 .hero-media { position: absolute; inset: 0; }
+.hero-media picture {
+  position: absolute; inset: 0;
+}
+.hero-media picture img,
+.hero-media img.poster,
 .hero-media video {
   width: 100%; height: 100%; object-fit: cover; object-position: center;
   display: block;
 }
+.hero-media video {
+  position: absolute; inset: 0;
+  opacity: 0;
+  transition: opacity .45s ease;
+  pointer-events: none;
+}
+.hero-media video.is-on { opacity: 1; }
 .hero-scrim { position: absolute; inset: 0; pointer-events: none;
   background:
     linear-gradient(100deg, rgba(20,20,20,.78) 0%, rgba(20,20,20,.46) 38%, rgba(20,20,20,.22) 70%),
@@ -1282,7 +1298,7 @@ body { background: #fff; }
 /* watermark: dark tint on light instead of light tint on dark */
 .shead-wm { color: rgba(32, 32, 32, 0.12); }
 .shead h2 { color: var(--ink); }
-.shead h2 em { color: var(--tan); }
+.shead h2 em { color: var(--walnut); }
 
 /* map chrome */
 .map { background: var(--graphite-3); border-color: var(--line); }
@@ -1349,13 +1365,13 @@ body { background: #fff; }
 .ftr--second { background: var(--graphite-3); }
 .ftr a { color: var(--muted); }
 .ftr a:hover { color: var(--walnut); }
-.ftr h4, .ftr-blurb, .ftr-nap, .ftr-bar { color: var(--muted); }
+.ftr-h, .ftr-blurb, .ftr-nap, .ftr-bar { color: var(--muted); }
 .ftr-bar { border-top-color: var(--line); }
 
 /* misc */
 .fok { background: var(--graphite-3); border-color: var(--tan); }
 .fok p { color: var(--muted); }
-.qside .n { color: var(--tan); }
+.qside .n { color: var(--walnut); }
 .gsrc i { background: var(--tan); }
 .hdr {
   position: fixed; top: 0; left: 0; right: 0; z-index: 200;
@@ -1435,7 +1451,7 @@ main > .sec:first-child { padding-top: calc(var(--hdr-h) + var(--hdr-top) + clam
 .hbar-in {
   list-style: none; margin: 0; padding: 0;
   display: grid; grid-template-columns: repeat(4, 1fr);
-  background: rgba(255, 255, 255, 0.58);
+  background: rgba(255, 255, 255, 0.92);
   backdrop-filter: blur(8px);
   border-top: 1px solid rgba(255, 255, 255, 0.55);
   border-bottom: 1px solid rgba(255, 255, 255, 0.55);
@@ -1538,10 +1554,10 @@ main > .sec:first-child { padding-top: calc(var(--hdr-h) + var(--hdr-top) + clam
 .hero h1,
 .hero-sub,
 .hero-copy .eyebrow { color: #fff; text-shadow: 0 1px 3px rgba(0,0,0,.42), 0 2px 26px rgba(0,0,0,.3); }
-.hero h1 em, .hero h1 i { color: var(--tan-hi); }
+.hero h1 em, .hero h1 i { color: #fff; }
 .hero-sub { color: rgba(255,255,255,.92); }
 .hero-sub b { color: #fff; }
-.hero-copy .eyebrow { color: var(--tan-hi); }
+.hero-copy .eyebrow { color: rgba(255,255,255,.92); }
 
 /* ghost button reads on the darker ground now */
 .hero .btn-ghost { color: #fff; border-color: rgba(255,255,255,.55); }
@@ -1818,10 +1834,10 @@ main > .sec:first-child { padding-top: calc(var(--hdr-h) + var(--hdr-top) + clam
   position: relative; overflow: hidden; background: var(--wall-2);
   border: 1px solid rgba(32, 32, 32, 0.07);
   min-height: 288px; isolation: isolate; cursor: pointer;
-  clip-path: inset(0 0 100% 0);
+  opacity: 0;
   transform: translate3d(0, 36px, 0);
-  transition: clip-path 1.35s cubic-bezier(0.19, 1, 0.22, 1),
-              transform 1.35s cubic-bezier(0.19, 1, 0.22, 1),
+  transition: opacity 1.15s cubic-bezier(0.19, 1, 0.22, 1),
+              transform 1.15s cubic-bezier(0.19, 1, 0.22, 1),
               box-shadow .3s var(--ease);
   transition-delay: var(--d, 0ms);
 }
@@ -1829,7 +1845,7 @@ main > .sec:first-child { padding-top: calc(var(--hdr-h) + var(--hdr-top) + clam
   flex-basis: calc((100% - 32px) / 3);
   max-width: calc((100% - 32px) / 3);
 }
-.svcx.is-in { clip-path: inset(0); transform: none; }
+.svcx.is-in { opacity: 1; transform: none; }
 .svcx:hover { box-shadow: 0 22px 50px rgba(32,26,18,.22); }
 .svcx.is-on { box-shadow: 0 22px 50px rgba(32,26,18,.22); }
 
@@ -1898,7 +1914,7 @@ main > .sec:first-child { padding-top: calc(var(--hdr-h) + var(--hdr-top) + clam
   .svcx-more { color: var(--walnut); }
 }
 @media (prefers-reduced-motion: reduce) {
-  .svcx { clip-path: none; transform: none; }
+  .svcx { opacity: 1; transform: none; }
   .svcx-bg img { transition: none; }
 }
 @media (max-width: 1240px) {
@@ -2063,14 +2079,11 @@ main { position: relative; z-index: 0; isolation: isolate; }
 }
 
 .rv-on [data-rv] {
-  /* No blur. Each blurred element became its own composited layer, and
-     under that load Chrome painted a strip of the testimonials section at
-     the top-left corner, over the header. Depth comes from clip, scale
-     and translation, which composite without rasterising a new layer. */
+  /* Opacity + transform only: clip-path animations are not composited
+     and were showing up as long paint work in Lighthouse. */
   transition:
     opacity var(--rv-dur) var(--rv-ease),
-    transform var(--rv-dur) var(--rv-ease),
-    clip-path var(--rv-dur) var(--rv-ease);
+    transform var(--rv-dur) var(--rv-ease);
   transition-delay: var(--rv-d, 0ms);
 }
 
@@ -2079,25 +2092,19 @@ main { position: relative; z-index: 0; isolation: isolate; }
    Photographs (`zoom`) keep their transform so parallax can own it. */
 .rv-on [data-rv].is-in { opacity: 1; }
 .rv-on [data-rv]:not([data-rv='zoom']).is-in { transform: none; }
-.rv-on [data-rv='unveil'].is-in,
-.rv-on [data-rv='lift'].is-in,
-.rv-on [data-rv='mask'].is-in,
-.rv-on [data-rv='zoom'].is-in { clip-path: inset(0); }
 
 /* rise: headings - a short lift. Words do the expensive work. */
 .rv-on [data-rv='rise'] { opacity: 1; transform: translate3d(0, 24px, 0); }
 
-/* unveil: the type was always there; a mask lifts off it */
+/* unveil: the type was always there; it lifts into place */
 .rv-on [data-rv='unveil'] {
-  opacity: 1;
-  clip-path: inset(0 0 100% 0);
+  opacity: 0;
   transform: translate3d(0, 44px, 0);
 }
 
-/* lift: cards and list items - clip + a whisper of scale */
+/* lift: cards and list items */
 .rv-on [data-rv='lift'] {
-  opacity: 1;
-  clip-path: inset(0 0 100% 0);
+  opacity: 0;
   transform: translate3d(0, 36px, 0) scale(0.975);
 }
 
@@ -2107,8 +2114,8 @@ main { position: relative; z-index: 0; isolation: isolate; }
 .rv-on [data-rv='slide-up'] { opacity: 0; transform: translate3d(0, 40px, 0); }
 .rv-on [data-rv='fade'] { opacity: 0; transform: translate3d(0, 18px, 0); }
 
-/* mask: gallery curtain - wipes up while the picture settles */
-.rv-on [data-rv='mask'] { opacity: 1; clip-path: inset(0 0 100% 0); overflow: hidden; }
+/* mask: gallery curtain - picture scales in */
+.rv-on [data-rv='mask'] { opacity: 0; overflow: hidden; }
 .rv-on [data-rv='mask'] .wk-img img {
   transform: scale(1.22);
   transition: transform var(--rv-dur-slow) var(--rv-ease);
@@ -2119,7 +2126,6 @@ main { position: relative; z-index: 0; isolation: isolate; }
 .rv-on [data-rv='zoom'] {
   opacity: 1;
   overflow: hidden;
-  clip-path: inset(10%);
 }
 
 /* headings (and the hero) rise word by word from behind a mask */
@@ -2954,7 +2960,7 @@ main { position: relative; z-index: 0; isolation: isolate; }
 .ab-more:hover { color: var(--ink); }
 .ab-more .ar { transform: rotate(-45deg); }
 
-.steps .step b { color: var(--tan); font-weight: 600; }
+.steps .step b { color: var(--walnut); font-weight: 600; }
 .steps .step p { color: var(--muted); }
 .steps .step span {
   display: block;

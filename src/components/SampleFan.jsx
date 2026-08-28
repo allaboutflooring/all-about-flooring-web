@@ -83,7 +83,7 @@ export default function SampleFan({ className = '' }) {
             />
             <img
               className="fan-img"
-              src="/img/sample-fan-1400.png"
+              src="/img/sample-fan-900.png"
               srcSet="/img/sample-fan-900.png 900w, /img/sample-fan-1400.png 1400w"
               sizes="(max-width: 900px) 70vw, 28vw"
               width="1536"

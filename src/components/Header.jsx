@@ -122,7 +122,7 @@ export default function Header({ location, variant = 'main', nav = [], homeHref 
                   href={n.href}
                   className={on ? 'nav-parent is-on' : 'nav-parent'}
                   aria-expanded={openDrop}
-                  aria-haspopup="true"
+                  aria-haspopup="menu"
                   aria-current={on ? 'page' : undefined}
                 >
                   {n.label} <Caret />

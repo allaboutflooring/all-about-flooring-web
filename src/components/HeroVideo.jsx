@@ -15,37 +15,25 @@ const DEFAULT_SOURCES = {
   mp4: '/video/hero-1080.mp4',
   webmSmall: '/video/hero-720.webm',
   mp4Small: '/video/hero-720.mp4',
-  poster: '/img/hero-poster.jpg',
 }
 
 /**
- * Picks a source by DEVICE pixels, not CSS pixels.
- *
- * The old rule dropped to 720p below 900px CSS width, which meant a
- * modern phone - 390 CSS px at DPR 3, so 1170 real pixels across a
- * full-bleed hero - was being handed a 1280-wide file to stretch. That
- * is most of why the video looked soft.
- *
- * 720p is reserved for genuinely small or bandwidth-constrained devices.
- * Above 1900 real pixels - a retina laptop or any 4K screen - the 1440p
- * tier is served instead: the browser was upscaling 1080p to fill those,
- * and measured at a 2560px-wide hero the 1440p file carries twice the
- * fine detail.
+ * Picks a source by CSS width so a phone never pulls 1080p/1440p on the
+ * LCP path. 720p on small or constrained connections, 1080p otherwise,
+ * 1440p only on genuinely wide desktops.
  */
 function pickSource(s) {
-  const dpr = window.devicePixelRatio || 1
   const cssW = window.innerWidth
-  const devicePx = cssW * dpr
   const net = navigator.connection || {}
   const thrifty =
     net.saveData === true || ['slow-2g', '2g', '3g'].includes(net.effectiveType)
 
   const pair =
-    thrifty || devicePx < 900
+    thrifty || cssW < 700
       ? { webm: s.webmSmall, mp4: s.mp4Small }
-      : devicePx < 1600 && cssW < 1100
-        ? { webm: s.webm, mp4: s.mp4 }
-        : { webm: s.webmLarge, mp4: s.mp4Large }
+      : cssW >= 1800
+        ? { webm: s.webmLarge, mp4: s.mp4Large }
+        : { webm: s.webm, mp4: s.mp4 }
 
   const probe = document.createElement('video')
   const webmOk =
@@ -94,75 +82,84 @@ export default function HeroVideo({
     if (!v) return
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
 
-    // Must be set as properties, not attributes, for autoplay to be allowed.
-    v.muted = true
-    v.defaultMuted = true
-    v.playsInline = true
-    v.setAttribute('muted', '')
-    v.setAttribute('playsinline', '')
-
-    // Must leave 'none' before load(), or the browser never buffers and
-    // canplay/loadeddata never arrive.
-    v.preload = 'auto'
-    v.src = pickSource(sources)
-    v.load()
-    setEnabled(true)
-
     let retried = false
     let settled = false
-    const attempt = () => {
-      if (settled || !v.paused) return Promise.resolve()
-      return v.play().then(
-        () => {
-          settled = true
-          setPlaying(true)
-        },
-        () => {
-          setPlaying(false)
-          if (!retried) {
-            retried = true
-            const once = () => {
-              v.play().then(() => setPlaying(true)).catch(() => {})
-              window.removeEventListener('pointerdown', once)
-              window.removeEventListener('touchstart', once)
-            }
-            window.addEventListener('pointerdown', once, { once: true })
-            window.addEventListener('touchstart', once, { once: true })
-          }
-        }
-      )
+    let cancelled = false
+    let kick
+    let idleId
+    const listeners = []
+    const on = (el, ev, fn) => {
+      el.addEventListener(ev, fn)
+      listeners.push(() => el.removeEventListener(ev, fn))
     }
 
-    const onCanPlay = () => attempt()
-    // Written straight to the DOM node: no state, no render, no effect churn.
-    const onTime = () => {
+    const start = () => {
+      if (cancelled) return
+      const net = navigator.connection || {}
+      if (net.saveData === true || net.effectiveType === 'slow-2g' || net.effectiveType === '2g') return
+
+      v.muted = true
+      v.defaultMuted = true
+      v.playsInline = true
+      v.setAttribute('muted', '')
+      v.setAttribute('playsinline', '')
+      v.preload = 'auto'
+      v.src = pickSource(sources)
+      v.load()
+      setEnabled(true)
+
+      const attempt = () => {
+        if (settled || !v.paused) return Promise.resolve()
+        return v.play().then(
+          () => {
+            settled = true
+            setPlaying(true)
+          },
+          () => {
+            setPlaying(false)
+            if (!retried) {
+              retried = true
+              const once = () => {
+                v.play().then(() => setPlaying(true)).catch(() => {})
+              }
+              on(window, 'pointerdown', once)
+              on(window, 'touchstart', once)
+            }
+          }
+        )
+      }
+
+      on(v, 'loadeddata', attempt)
+      on(v, 'canplay', attempt)
+      on(v, 'canplaythrough', attempt)
+      on(v, 'play', () => setPlaying(true))
+      on(v, 'pause', () => setPlaying(false))
+      attempt()
+      kick = setTimeout(attempt, 400)
+    }
+
+    const idle = (fn) => {
+      if (window.requestIdleCallback) {
+        idleId = window.requestIdleCallback(fn, { timeout: 1600 })
+      } else {
+        idleId = setTimeout(fn, 200)
+      }
+    }
+    if (document.readyState === 'complete') idle(start)
+    else on(window, 'load', () => idle(start))
+
+    on(v, 'timeupdate', () => {
       if (progRef.current && v.duration) {
         progRef.current.style.width = `${(v.currentTime / v.duration) * 100}%`
       }
-    }
-    const onPlay = () => setPlaying(true)
-    const onPause = () => setPlaying(false)
-
-    // Several signals, because which one arrives first varies by browser.
-    v.addEventListener('loadeddata', onCanPlay)
-    v.addEventListener('canplay', onCanPlay)
-    v.addEventListener('canplaythrough', onCanPlay)
-    v.addEventListener('timeupdate', onTime)
-    v.addEventListener('play', onPlay)
-    v.addEventListener('pause', onPause)
-
-    // And try straight away - if metadata is already there this wins.
-    attempt()
-    const kick = setTimeout(attempt, 400)
+    })
 
     return () => {
+      cancelled = true
       clearTimeout(kick)
-      v.removeEventListener('loadeddata', onCanPlay)
-      v.removeEventListener('canplaythrough', onCanPlay)
-      v.removeEventListener('canplay', onCanPlay)
-      v.removeEventListener('timeupdate', onTime)
-      v.removeEventListener('play', onPlay)
-      v.removeEventListener('pause', onPause)
+      clearTimeout(idleId)
+      if (window.cancelIdleCallback) window.cancelIdleCallback(idleId)
+      listeners.forEach((fn) => fn())
     }
   }, [sources.webm, sources.mp4, sources.webmSmall, sources.mp4Small, sources.webmLarge, sources.mp4Large])
 
@@ -176,10 +173,30 @@ export default function HeroVideo({
   return (
     <section className="hero" id="top">
       <div className="hero-media">
+        <picture>
+          <source
+            type="image/webp"
+            srcSet="/img/hero-poster-960.webp 960w, /img/hero-poster-1600.webp 1600w"
+            sizes="100vw"
+          />
+          <img
+            className="poster"
+            src="/img/hero-poster-960.jpg"
+            srcSet="/img/hero-poster-960.jpg 960w, /img/hero-poster-1600.jpg 1600w"
+            sizes="100vw"
+            width="1920"
+            height="1080"
+            alt=""
+            fetchPriority="high"
+            decoding="async"
+          />
+        </picture>
         <video
           ref={videoRef}
-          poster={sources.poster}
+          className={playing ? 'is-on' : undefined}
           loop
+          muted
+          playsInline
           preload="none"
           aria-hidden="true"
           tabIndex={-1}

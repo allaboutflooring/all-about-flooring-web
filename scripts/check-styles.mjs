@@ -21,6 +21,7 @@ const ALLOWED = new Set([
   'locpg',        // section hook; children (.locpg-frame) carry the styling
   'abpg-block',   // section hook; children (.abpg-grid) carry the styling
   'onClass', 'marked', 'on', 'menuClass',
+  'playing',      // HeroVideo state inside className expression
 ])
 
 const css = readFileSync('src/styles/global.css', 'utf8') +
@@ -75,12 +76,11 @@ const INVARIANTS = [
 
 const failures = []
 
-// The hero is white type. If the LAST .hero rule does not paint a poster
-// behind it, an unplayed video leaves a blank first screen - which shipped
-// once already. Check the winning rule, not just any rule.
+// The hero is white type. --graphite is a light bone in this theme, so the
+// last .hero rule must keep a dark fallback while the LCP <picture> paints.
 const heroRules = [...css.matchAll(/(?<![\w.-])\.hero\s*\{([^}]*)\}/g)].map((m) => m[1])
-if (heroRules.length && !heroRules[heroRules.length - 1].includes('hero-poster')) {
-  failures.push('the last .hero rule has no poster background  (white hero type would be invisible)')
+if (heroRules.length && !heroRules[heroRules.length - 1].includes('#1c1a18')) {
+  failures.push('the last .hero rule has no dark fallback  (white hero type would be invisible)')
 }
 for (const [sel, prop, what] of INVARIANTS) {
   const re = new RegExp(sel.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\s*\\{([^}]*)\\}', 'g')

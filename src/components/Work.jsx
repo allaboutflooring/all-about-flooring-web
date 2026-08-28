@@ -111,7 +111,7 @@ export default function Work({
             {heading}
           </SectionHead>
 
-          <div className="wks-filters" role="group" aria-label="Filter projects">
+          <div className="wks-filters" role="toolbar" aria-label="Filter projects">
             {tags.map((t) => (
               <button
                 key={t}

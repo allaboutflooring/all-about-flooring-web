@@ -61,6 +61,7 @@ export default function Reviews({ location, items = GOOGLE_REVIEWS }) {
   const count = Number(live?.count) || Number(location.reviewCount) || cards.length
   const average = Number(live?.rating) || Number(location.reviewAverage)
   const trackRef = useRef(null)
+  const sectionRef = useRef(null)
   const [atStart, setAtStart] = useState(true)
   const [atEnd, setAtEnd] = useState(false)
 
@@ -84,15 +85,36 @@ export default function Reviews({ location, items = GOOGLE_REVIEWS }) {
   }, [sync, cards.length])
 
   useEffect(() => {
+    const root = sectionRef.current
+    if (!root) return
     let cancelled = false
-    fetch(`/api/google-reviews?l=${encodeURIComponent(location.key)}`)
-      .then((res) => (res.ok ? res.json() : null))
-      .then((data) => {
-        if (!cancelled && data?.count) setLive(data)
-      })
-      .catch(() => {})
+    const load = () => {
+      fetch(`/api/google-reviews?l=${encodeURIComponent(location.key)}`)
+        .then((res) => (res.ok ? res.json() : null))
+        .then((data) => {
+          if (!cancelled && data?.count) setLive(data)
+        })
+        .catch(() => {})
+    }
+    if (typeof IntersectionObserver === 'undefined') {
+      load()
+      return () => {
+        cancelled = true
+      }
+    }
+    const io = new IntersectionObserver(
+      ([e]) => {
+        if (e.isIntersecting) {
+          load()
+          io.disconnect()
+        }
+      },
+      { rootMargin: '240px' }
+    )
+    io.observe(root)
     return () => {
       cancelled = true
+      io.disconnect()
     }
   }, [location.key])
 
@@ -106,7 +128,7 @@ export default function Reviews({ location, items = GOOGLE_REVIEWS }) {
   }
 
   return (
-    <section className="sec sec-dark tst" id="reviews">
+    <section className="sec sec-dark tst" id="reviews" ref={sectionRef}>
       <div className="wrap">
         <SectionHead watermark="Reviews" accent="say">
           What clients

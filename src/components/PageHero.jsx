@@ -30,7 +30,12 @@ export default function PageHero({
           src={`${image}-1600.jpg`}
           srcSet={`${image}-1000.jpg 1000w, ${image}-1600.jpg 1600w`}
           sizes="100vw"
+          width="1600"
+          height="533"
           alt={alt}
+          loading="eager"
+          fetchPriority="high"
+          decoding="async"
         />
       </picture>
 
