@@ -5,7 +5,7 @@ import Services from '../components/Services'
 import ServiceArea from '../components/ServiceArea'
 import Cta from '../components/Cta'
 import { SERVICES_PAGE } from '../data/services'
-import { MAIN } from '../data/locations'
+import { MAIN, MAIN_AREA_INTRO } from '../data/locations'
 import { CTA_LATE } from '../data/cta'
 
 /**
@@ -34,7 +34,7 @@ export default function ServicesPage() {
 
       <ServiceArea
         primary={MAIN}
-        intro="We cover the Tampa Bay area from Spring Hill down to Riverview, and across the bay to Clearwater and Dunedin."
+        intro={MAIN_AREA_INTRO}
       />
 
       <Cta content={CTA_LATE} location={MAIN} />

@@ -6,7 +6,7 @@ import Services from '../components/Services'
 import Cta from '../components/Cta'
 import ServiceArea from '../components/ServiceArea'
 import LocationMap from '../components/LocationMap'
-import { AREA_PAGES, MAIN } from '../data/locations'
+import { AREA_PAGES, MAIN, MAIN_AREA_INTRO } from '../data/locations'
 import { CTA_LATE } from '../data/cta'
 
 function Check() {
@@ -24,8 +24,7 @@ function Check() {
   )
 }
 
-const AREA_INTRO =
-  'We cover the Tampa Bay area from Spring Hill down to Riverview, and across the bay to Clearwater and Dunedin.'
+const AREA_INTRO = MAIN_AREA_INTRO
 
 /**
  * One town. Banner, what we install there, the service cards, a measure

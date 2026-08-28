@@ -11,7 +11,7 @@ import About from '../components/About'
 import Work from '../components/Work'
 import Faqs from '../components/Faqs'
 import ServiceArea from '../components/ServiceArea'
-import { MAIN } from '../data/locations'
+import { MAIN, MAIN_AREA_INTRO } from '../data/locations'
 import { CTA_MID, CTA_LATE } from '../data/cta'
 import { HOME_WORK } from '../data/content'
 import { ABOUT_PATH, SITE } from '../data/site'
@@ -73,7 +73,7 @@ export default function Home() {
 
       <ServiceArea
         primary={MAIN}
-        intro="We cover the Tampa Bay area from Spring Hill down to Riverview, and across the bay to Clearwater and Dunedin."
+        intro={MAIN_AREA_INTRO}
       />
     </MainLayout>
   )

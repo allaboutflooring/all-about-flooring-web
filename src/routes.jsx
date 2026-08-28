@@ -35,11 +35,13 @@ const serviceRoutes = Object.entries(SERVICE_PAGES).map(([slug, p]) => ({
   entry: 'src/pages/ServicePage.jsx',
 }))
 
-const areaRoutes = Object.entries(AREA_PAGES).map(([slug, p]) => ({
-  path: p.path,
-  element: <AreaPage slug={slug} />,
-  entry: 'src/pages/AreaPage.jsx',
-}))
+const areaRoutes = Object.entries(AREA_PAGES)
+  .filter(([, p]) => !p.skipRoute)
+  .map(([slug, p]) => ({
+    path: p.path,
+    element: <AreaPage slug={slug} />,
+    entry: 'src/pages/AreaPage.jsx',
+  }))
 
 const stPeteServiceRoutes = Object.entries(STPETE_SERVICE_PAGES).map(([slug]) => ({
   path: STPETE_SERVICE_PAGES[slug].path,

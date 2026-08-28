@@ -5,11 +5,8 @@ import ServiceArea from '../components/ServiceArea'
 import Services from '../components/Services'
 import Cta from '../components/Cta'
 import LocationMap from '../components/LocationMap'
-import { MAIN } from '../data/locations'
+import { MAIN, MAIN_AREA_INTRO } from '../data/locations'
 import { CTA_LATE } from '../data/cta'
-
-const AREA_INTRO =
-  'We cover the Tampa Bay area from Spring Hill down to Riverview, and across the bay to Clearwater and Dunedin.'
 
 /**
  * Locations. Towns we cover, the services we take there, then the map.
@@ -21,7 +18,7 @@ export default function LocationsPage() {
         path="/locations"
         location={MAIN}
         title={`Service Areas in ${MAIN.city} | All About Flooring`}
-        description={`Flooring installation across Tampa Bay - Odessa, Carrollwood, Brandon, Clearwater, Dunedin, Wesley Chapel and nearby. Free in-home measure.`}
+        description={`Flooring installation across Tampa Bay - Odessa, Carrollwood, Brandon, St. Petersburg, Largo, Lutz, Land O' Lakes and nearby. Free in-home measure.`}
       />
 
       <PageHero
@@ -32,7 +29,7 @@ export default function LocationsPage() {
         ]}
       />
 
-      <ServiceArea primary={MAIN} intro={AREA_INTRO} />
+      <ServiceArea primary={MAIN} intro={MAIN_AREA_INTRO} />
 
       <Services heading="Featured" accent="Services" intro={null} />
 

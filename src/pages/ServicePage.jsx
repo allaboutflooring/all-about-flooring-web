@@ -6,7 +6,7 @@ import Services from '../components/Services'
 import ServiceArea from '../components/ServiceArea'
 import { SERVICE_PAGES } from '../data/services'
 import { SERVICE_CARDS } from '../data/content'
-import { MAIN } from '../data/locations'
+import { MAIN, MAIN_AREA_INTRO } from '../data/locations'
 
 function Check() {
   return (
@@ -134,7 +134,7 @@ export default function ServicePage({ slug }) {
 
       <ServiceArea
         primary={MAIN}
-        intro="We cover the Tampa Bay area from Spring Hill down to Riverview, and across the bay to Clearwater and Dunedin."
+        intro={MAIN_AREA_INTRO}
       />
     </MainLayout>
   )

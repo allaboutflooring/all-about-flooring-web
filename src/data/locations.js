@@ -63,6 +63,18 @@ export const MAIN = {
     'Pinellas Park',
     'Spring Hill',
     'Riverview',
+    'St. Petersburg',
+    'Largo',
+    'Tarpon Springs',
+    'Safety Harbor',
+    'New Port Richey',
+    'Lutz',
+    "Land O' Lakes",
+    'Apollo Beach',
+    'Ruskin',
+    'Valrico',
+    'Lithia',
+    'Oldsmar',
   ],
   // Fallback only. Live values come from Places API via /api/google-reviews.
   reviewCount: 142,
@@ -191,12 +203,13 @@ const AREA_PHOTOS = [
 const AREA_CLOSE =
   'One crew from the first measure to the last baseboard. You get a written itemised price, a date we actually keep, and a floor built to live in, not just photograph. Licensed, insured, and local.'
 
-function makeArea({ key, city, path, top, blurb, photo = 0 }) {
+function makeArea({ key, city, path, top, blurb, photo = 0, skipRoute = false }) {
   const shot = AREA_PHOTOS[photo % AREA_PHOTOS.length]
   return {
     key,
     city,
     path,
+    skipRoute,
     heroTitle: top
       ? `Top Flooring Company in ${city}`
       : `Expert Flooring Company in ${city}`,
@@ -331,13 +344,115 @@ export const AREA_PAGES = {
     blurb:
       'Riverview is south Hillsborough growth - new builds, big great rooms, and plenty of LVP. We install luxury vinyl, porcelain tile, and hardwood, and we sequence the job so you are not living on plywood for a month.',
   }),
+  'st-petersburg': makeArea({
+    key: 'st-petersburg',
+    city: 'St. Petersburg',
+    path: '/top-flooring-companies-st-petersburg',
+    skipRoute: true,
+    top: true,
+    photo: 0,
+    blurb:
+      'St. Petersburg is our second listing - Pinellas homes, condos and waterfront houses across the bay. The St. Petersburg page has that crew, that phone number, and the towns we cover from there.',
+  }),
+  largo: makeArea({
+    key: 'largo',
+    city: 'Largo',
+    path: '/locations/largo',
+    photo: 1,
+    blurb:
+      'Largo is central Pinellas - family homes, open plans and a lot of luxury vinyl. We drive from Tampa for whole-house LVP, hardwood and tile, with the same written price and the same crew that measured the rooms.',
+  }),
+  'tarpon-springs': makeArea({
+    key: 'tarpon-springs',
+    city: 'Tarpon Springs',
+    path: '/locations/tarpon-springs',
+    photo: 2,
+    blurb:
+      'Tarpon Springs bungalows, sponge-dock cottages and newer builds north of the bridges all take Gulf humidity. We install waterproof LVP, porcelain tile and hardwood specified for the room, not a catalogue default.',
+  }),
+  'safety-harbor': makeArea({
+    key: 'safety-harbor',
+    city: 'Safety Harbor',
+    path: '/locations/safety-harbor',
+    photo: 3,
+    blurb:
+      'Safety Harbor sits on the north bay - downtown bungalows and waterfront houses that need a floor that looks right in an older plan. We install luxury vinyl, tile and hardwood with one Tampa Bay crew from measure to walkthrough.',
+  }),
+  'new-port-richey': makeArea({
+    key: 'new-port-richey',
+    city: 'New Port Richey',
+    path: '/locations/new-port-richey',
+    photo: 4,
+    blurb:
+      'New Port Richey is west Pasco - ranch homes, river lots and re-floors we run as a regular Tampa Bay job, not a distant add-on. Luxury vinyl, hardwood and tile, itemised before a plank goes down.',
+  }),
+  lutz: makeArea({
+    key: 'lutz',
+    city: 'Lutz',
+    path: '/locations/lutz',
+    photo: 5,
+    blurb:
+      'Lutz sits on the north edge of Tampa - suburban houses, lake lots and open plans that want one floor through the living areas. We moisture-test the slab and install LVP, hardwood and porcelain with the crew that priced it.',
+  }),
+  'land-o-lakes': makeArea({
+    key: 'land-o-lakes',
+    city: "Land O' Lakes",
+    path: '/locations/land-o-lakes',
+    photo: 0,
+    blurb:
+      "Land O' Lakes is Pasco growth - new construction, big great rooms and plenty of luxury vinyl over slab. We test moisture, level where it needs it, and install LVP, tile or engineered hardwood so the floor stays flat through August.",
+  }),
+  'apollo-beach': makeArea({
+    key: 'apollo-beach',
+    city: 'Apollo Beach',
+    path: '/locations/apollo-beach',
+    photo: 1,
+    blurb:
+      'Apollo Beach is south Hillsborough waterfront - sliders, sand and humidity that punish the wrong floor. Waterproof LVP and porcelain are the usual call; hardwood goes down where the room can take it, after a reading, not before.',
+  }),
+  ruskin: makeArea({
+    key: 'ruskin',
+    city: 'Ruskin',
+    path: '/locations/ruskin',
+    photo: 2,
+    blurb:
+      'Ruskin sits on the south bay, between agricultural land and new subdivisions. We install luxury vinyl, tile and hardwood in both, sequenced so you are not living on plywood for a month.',
+  }),
+  valrico: makeArea({
+    key: 'valrico',
+    city: 'Valrico',
+    path: '/locations/valrico',
+    photo: 3,
+    blurb:
+      'Valrico is east of Brandon - family homes that need a floor that survives kids, dogs and a Florida summer. Same Tampa crew, same itemised price, luxury vinyl, hardwood and porcelain tile.',
+  }),
+  lithia: makeArea({
+    key: 'lithia',
+    city: 'Lithia',
+    path: '/locations/lithia',
+    photo: 4,
+    blurb:
+      'Lithia is further east Hillsborough - newer builds and larger lots where a whole-house LVP or hardwood job is the norm. We measure, write the price, and install with one crew so the handoff never happens.',
+  }),
+  oldsmar: makeArea({
+    key: 'oldsmar',
+    city: 'Oldsmar',
+    path: '/locations/oldsmar',
+    photo: 5,
+    blurb:
+      'Oldsmar sits between Tampa and the north bay - ranch homes, townhouses and remodels that have to match what is already there. We install luxury vinyl, tile and hardwood so the new floor belongs in the house, not a showroom leftover.',
+  }),
 }
 
 export const areaPageHref = (city) =>
   Object.values(AREA_PAGES).find((a) => a.city.toLowerCase() === city.toLowerCase())?.path ??
   null
 
+export const MAIN_AREA_INTRO =
+  'We cover Tampa Bay from New Port Richey and Spring Hill down to Ruskin and Apollo Beach, and across the bay to Clearwater, Dunedin, Tarpon Springs and St. Petersburg.'
+
 export const NAV_AREAS = Object.values(AREA_PAGES).map((a) => ({
   href: a.path,
   label: a.city,
 }))
+
