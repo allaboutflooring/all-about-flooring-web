@@ -117,8 +117,8 @@ function RoomPhoto({ r, eager }) {
  */
 export default function RoomTour() {
   const trackRef = useRef(null)
+  const navRef = useRef(null)
   const roomRefs = useRef([])
-  const [active, setActive] = useState(0)
   const [plain, setPlain] = useState(false)
 
   useEffect(() => {
@@ -165,8 +165,18 @@ export default function RoomTour() {
         el.classList.toggle('is-on', abs < 0.55)
       })
 
+      // Do not setState here. A re-render resets className / inline
+      // transforms and the camera hitch is what felt stuck between rooms.
       const next = Math.round(p)
-      setActive((cur) => (cur === next ? cur : next))
+      navRef.current?.querySelectorAll('a').forEach((a, i) => {
+        const on = i === next
+        a.classList.toggle('is-on', on)
+        if (on) a.setAttribute('aria-current', 'true')
+        else a.removeAttribute('aria-current')
+      })
+      nodes.forEach((el, i) => {
+        el.setAttribute('aria-hidden', i === next ? 'false' : 'true')
+      })
     }
 
     const onScroll = () => {
@@ -214,13 +224,13 @@ export default function RoomTour() {
             </p>
           </div>
 
-          <nav className="rooms-nav" aria-label="Rooms in the walkthrough">
+          <nav className="rooms-nav" ref={navRef} aria-label="Rooms in the walkthrough">
             {ROOMS.map((r, i) => (
               <a
                 key={r.key}
                 href={`#room-${r.key}`}
-                className={active === i ? 'is-on' : ''}
-                aria-current={active === i ? 'true' : undefined}
+                className={i === 0 ? 'is-on' : undefined}
+                aria-current={i === 0 ? 'true' : undefined}
               >
                 <span>{String(i + 1).padStart(2, '0')}</span>
                 {r.name}
@@ -232,7 +242,7 @@ export default function RoomTour() {
             {ROOMS.map((r, i) => (
               <figure
                 key={r.key}
-                className={`room${i === 0 ? ' is-on' : ''}${r.clean ? ' is-clean' : ''}`}
+                className={`room${r.clean ? ' is-clean' : ''}`}
                 style={{
                   '--room-pos': r.position || 'center center',
                   '--room-pos-m': r.positionMobile || r.position || 'center center',
@@ -240,13 +250,12 @@ export default function RoomTour() {
                 ref={(el) => {
                   roomRefs.current[i] = el
                 }}
-                aria-hidden={active !== i}
               >
                 <RoomPhoto r={r} eager={i === 0} />
                 <figcaption className="room-name">{r.name}</figcaption>
                 <div className="room-marks">
                   {r.markers.map((m) => (
-                    <Marker key={m.n} m={m} show={active === i} />
+                    <Marker key={m.n} m={m} show />
                   ))}
                 </div>
               </figure>

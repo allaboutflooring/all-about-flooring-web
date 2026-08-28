@@ -41,11 +41,25 @@ export function initSmoothScroll() {
 
   const maxScroll = () => Math.max(0, root.scrollHeight - window.innerHeight)
 
+  const inRooms = () => {
+    const track = document.querySelector('.rooms-track')
+    if (!track || track.closest('.rooms.is-plain')) return false
+    const r = track.getBoundingClientRect()
+    return r.top < window.innerHeight && r.bottom > 0
+  }
+
+  const halt = () => {
+    running = false
+    cancelAnimationFrame(raf)
+    target = window.scrollY
+    current = window.scrollY
+  }
+
   const stop = () => {
     disabled = true
     cancelAnimationFrame(raf)
     root.style.scrollBehavior = prevBehavior
-    window.removeEventListener('wheel', onWheel)
+    window.removeEventListener('wheel', onWheel, { capture: true })
   }
 
   const tick = () => {
@@ -64,6 +78,12 @@ export function initSmoothScroll() {
   function onWheel(e) {
     if (disabled) return
     if (e.ctrlKey || e.metaKey || Math.abs(e.deltaX) > Math.abs(e.deltaY)) return
+    // Native page scroll while the walkthrough is on screen. The stage
+    // is sticky, so the lerp looked like the page had jammed.
+    if (inRooms()) {
+      halt()
+      return
+    }
     e.preventDefault()
     let delta = e.deltaY
     if (e.deltaMode === 1) delta *= 16
@@ -74,7 +94,7 @@ export function initSmoothScroll() {
       running = true
       const before = window.scrollY
       setTimeout(() => {
-        if (!disabled && Math.abs(window.scrollY - before) < 0.5 && Math.abs(target - before) > 4) stop()
+        if (!disabled && running && Math.abs(window.scrollY - before) < 0.5 && Math.abs(target - before) > 4) stop()
       }, 250)
       raf = requestAnimationFrame(tick)
     }
@@ -104,14 +124,14 @@ export function initSmoothScroll() {
     }
   }
 
-  window.addEventListener('wheel', onWheel, { passive: false })
+  window.addEventListener('wheel', onWheel, { passive: false, capture: true })
   window.addEventListener('scroll', onScroll, { passive: true })
   document.addEventListener('click', onClick)
 
   return () => {
     cancelAnimationFrame(raf)
     root.style.scrollBehavior = prevBehavior
-    window.removeEventListener('wheel', onWheel)
+    window.removeEventListener('wheel', onWheel, { capture: true })
     window.removeEventListener('scroll', onScroll)
     document.removeEventListener('click', onClick)
   }

@@ -1841,9 +1841,17 @@ main > .sec:first-child { padding-top: calc(var(--hdr-h) + var(--hdr-top) + clam
               box-shadow .3s var(--ease);
   transition-delay: var(--d, 0ms);
 }
+/* 3×3 keeps homepage card width - stretching to 1/3 made these boxes
+   visibly larger than the four-across set on the home page. */
+.svcx-grid.is-3 {
+  display: grid;
+  grid-template-columns: repeat(3, calc((100% - 48px) / 4));
+  justify-content: center;
+}
 .svcx-grid.is-3 .svcx {
-  flex-basis: calc((100% - 32px) / 3);
-  max-width: calc((100% - 32px) / 3);
+  flex: none;
+  max-width: none;
+  width: 100%;
 }
 .svcx.is-in { opacity: 1; transform: none; }
 .svcx:hover { box-shadow: 0 22px 50px rgba(32,26,18,.22); }
@@ -1918,23 +1926,23 @@ main > .sec:first-child { padding-top: calc(var(--hdr-h) + var(--hdr-top) + clam
   .svcx-bg img { transition: none; }
 }
 @media (max-width: 1240px) {
-  .svcx-grid .svcx,
-  .svcx-grid.is-3 .svcx {
+  .svcx-grid .svcx {
     flex-basis: calc((100% - 32px) / 3);
     max-width: calc((100% - 32px) / 3);
   }
+  .svcx-grid.is-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 @media (max-width: 1000px) {
-  .svcx-grid .svcx,
-  .svcx-grid.is-3 .svcx {
+  .svcx-grid .svcx {
     flex-basis: calc((100% - 16px) / 2);
     max-width: calc((100% - 16px) / 2);
   }
+  .svcx-grid.is-3 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .svcx { --d: 0ms !important; }
 }
 @media (max-width: 620px)  {
-  .svcx-grid .svcx,
-  .svcx-grid.is-3 .svcx { flex-basis: 100%; max-width: 100%; }
+  .svcx-grid .svcx { flex-basis: 100%; max-width: 100%; }
+  .svcx-grid.is-3 { grid-template-columns: 1fr; }
   .svcx { min-height: 0; }
 }
 
@@ -2554,7 +2562,12 @@ main { position: relative; z-index: 0; isolation: isolate; }
 }
 .rooms-pin { position: absolute; left: 0; width: 1px; height: 1px; pointer-events: none; }
 .rooms-sticky {
-  position: sticky; top: 0; height: 100svh; overflow: hidden;
+  position: sticky; top: 0; height: 100svh;
+  /* clip-path clips the 3D rooms without creating a scroll container.
+     overflow: hidden did, and the wheel got trapped between kitchen
+     and living when both frames were mid-transform. */
+  overflow: visible;
+  clip-path: inset(0);
   display: grid; place-items: stretch;
 }
 .rooms-stage {
