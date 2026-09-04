@@ -3,11 +3,13 @@ import Seo from '../components/Seo'
 import PageHero from '../components/PageHero'
 import Tick from '../components/Tick'
 import Services from '../components/Services'
+import { WhyChoose, ProcessSteps, ContentSection, SeoFaqs } from '../components/ServiceSeoContent'
+import Reviews from '../components/Reviews'
 import Cta from '../components/Cta'
 import ServiceArea from '../components/ServiceArea'
 import LocationMap from '../components/LocationMap'
 import { AREA_PAGES, MAIN, MAIN_AREA_INTRO } from '../data/locations'
-import { CTA_LATE } from '../data/cta'
+import { CTA_MID, CTA_LATE } from '../data/cta'
 
 function Check() {
   return (
@@ -36,58 +38,87 @@ export default function AreaPage({ slug }) {
 
   const workBase = `/img/work/${area.workKey}`
 
-  return (
-    <MainLayout>
-      <Seo
-        path={area.path}
-        location={MAIN}
-        title={`Expert Flooring Company in ${area.city} | All About Flooring`}
-        description={area.description}
-      />
+  const hero = (
+    <PageHero
+      title={area.heroTitle}
+      long
+      crumbs={[
+        { href: '/', label: 'Home' },
+        { href: '/locations', label: 'Locations' },
+        { label: area.crumb },
+      ]}
+    />
+  )
 
-      <PageHero
-        title={area.heroTitle}
-        long
-        crumbs={[
-          { href: '/', label: 'Home' },
-          { href: '/locations', label: 'Locations' },
-          { label: area.crumb },
-        ]}
-      />
+  // Optimised (seo) location pages use a white intro so it alternates into the
+  // bone Why-Choose section; other towns keep the original bone intro.
+  const introClass = area.seo ? 'sec abpg-block' : 'sec sec-dark abpg-block'
 
-      <section className="sec sec-dark abpg-block">
-        <div className="wrap abpg-grid is-compact">
-          <div className="ab-media is-scene">
-            <picture>
-              {area.webp !== false && (
-                <source
-                  type="image/webp"
-                  srcSet={`${workBase}-800.webp 800w, ${workBase}-1200.webp 1200w`}
-                  sizes="(max-width: 900px) 70vw, 360px"
-                />
-              )}
-              <img
-                className="ab-media-img"
-                src={`${workBase}-1200.jpg`}
-                srcSet={`${workBase}-800.jpg 800w, ${workBase}-1200.jpg 1200w`}
+  const introBlock = (
+    <section className={introClass}>
+      <div className="wrap abpg-grid is-compact">
+        <div className="ab-media is-scene">
+          <picture>
+            {area.webp !== false && (
+              <source
+                type="image/webp"
+                srcSet={`${workBase}-800.webp 800w, ${workBase}-1200.webp 1200w`}
                 sizes="(max-width: 900px) 70vw, 360px"
-                alt={area.alt}
-                width="1200"
-                height="1800"
-                loading="eager"
-                decoding="async"
               />
-            </picture>
-          </div>
-          <div className="abpg-copy">
-            <Tick>{area.tick}</Tick>
-            <h2>{area.heading}</h2>
-            {area.body.map((p) => (
-              <p key={p}>{p}</p>
-            ))}
-          </div>
+            )}
+            <img
+              className="ab-media-img"
+              src={`${workBase}-1200.jpg`}
+              srcSet={`${workBase}-800.jpg 800w, ${workBase}-1200.jpg 1200w`}
+              sizes="(max-width: 900px) 70vw, 360px"
+              alt={area.alt}
+              width="1200"
+              height="1800"
+              loading="eager"
+              decoding="async"
+            />
+          </picture>
         </div>
-      </section>
+        <div className="abpg-copy">
+          <Tick>{area.tick}</Tick>
+          <h2>{area.heading}</h2>
+          {area.body.map((p) => (
+            <p key={p}>{p}</p>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+
+  const featured = <Services heading="Featured" accent="Services" intro={null} />
+
+  // Optimised location pages (those with an `seo` block, e.g. Odessa) reuse
+  // the shared service-page content flow + homepage testimonials, while
+  // keeping the location hero, Featured Services, Service Areas, and map.
+  // Other towns keep the original generic layout untouched.
+  const s = area.seo
+  const body = s ? (
+    <div className="svcseo-page">
+      {hero}
+      {introBlock}
+      <WhyChoose data={s.whyChoose} />
+      {featured}
+      <Reviews location={MAIN} />
+      <ContentSection section={s.sections[0]} />
+      <Cta content={CTA_LATE} location={MAIN} />
+      <ContentSection section={s.sections[1]} wall />
+      <ProcessSteps data={s.process} />
+      <ServiceArea primary={MAIN} intro={AREA_INTRO} />
+      <ContentSection section={s.sections[2]} />
+      <Cta content={CTA_MID} location={MAIN} />
+      <ContentSection section={s.sections[3]} wall />
+      <SeoFaqs items={s.faqs} />
+      <LocationMap />
+    </div>
+  ) : (
+    <>
+      {hero}
+      {introBlock}
 
       <section className="sec abpg-block">
         <div className="wrap abpg-approach">
@@ -109,13 +140,25 @@ export default function AreaPage({ slug }) {
         </div>
       </section>
 
-      <Services heading="Featured" accent="Services" intro={null} />
+      {featured}
 
       <Cta content={CTA_LATE} location={MAIN} />
 
       <ServiceArea primary={MAIN} intro={AREA_INTRO} />
 
       <LocationMap />
+    </>
+  )
+
+  return (
+    <MainLayout>
+      <Seo
+        path={area.path}
+        location={MAIN}
+        title={area.metaTitle || `Expert Flooring Company in ${area.city} | All About Flooring`}
+        description={area.metaDescription || area.description}
+      />
+      {body}
     </MainLayout>
   )
 }

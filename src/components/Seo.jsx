@@ -13,6 +13,9 @@ import { SITE } from '../data/site'
  */
 export default function Seo({ title, description, path = '/', location, noindex = false }) {
   const url = `${SITE.origin}${path}`
+  // Canonicals carry a trailing slash site-wide. og:url and the LocalBusiness
+  // schema @id/url keep the slug-only `url`, so structured data is unchanged.
+  const canonical = path.endsWith('/') ? url : `${url}/`
 
   const schema = location && {
     '@context': 'https://schema.org',
@@ -60,7 +63,7 @@ export default function Seo({ title, description, path = '/', location, noindex 
     <Head>
       <title>{title}</title>
       <meta name="description" content={description} />
-      <link rel="canonical" href={url} />
+      <link rel="canonical" href={canonical} />
       <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
       <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48.png" />
       <link rel="apple-touch-icon" href="/apple-touch-icon.png" />

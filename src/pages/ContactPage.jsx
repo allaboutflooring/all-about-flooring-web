@@ -47,8 +47,8 @@ export default function ContactPage() {
       <Seo
         path="/contact"
         location={MAIN}
-        title={`Contact Us | Flooring Contractors in ${MAIN.city} | All About Flooring`}
-        description={`Book a free in-home measure with All About Flooring in ${MAIN.city}. Call ${MAIN.phone}, email ${MAIN.email}, or send the form - we reply the same working day.`}
+        title={`Contact ${MAIN.city} Flooring Contractor - All About Flooring`}
+        description={`Book a free in-home flooring measure with All About Flooring in ${MAIN.city}. Call ${MAIN.phone} or send the form — we reply the same working day.`}
       />
 
       <PageHero

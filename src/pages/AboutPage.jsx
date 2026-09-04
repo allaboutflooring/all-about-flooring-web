@@ -24,8 +24,8 @@ export default function AboutPage() {
       <Seo
         path={ABOUT_PATH}
         location={MAIN}
-        title={`About Us | Flooring Contractors in ${MAIN.city} | All About Flooring`}
-        description={`Meet All About Flooring and owner Amanda Neve. A Tampa crew that measures, prices and installs hardwood, tile and vinyl - plus kitchens and bathrooms. Free in-home measure.`}
+        title={`About All About Flooring | ${MAIN.city} Flooring Contractor`}
+        description={`Meet All About Flooring and owner Amanda Neve — a Tampa crew that measures, prices and installs hardwood, tile and vinyl. Free in-home measure.`}
       />
 
       <PageHero

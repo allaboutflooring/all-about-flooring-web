@@ -22,6 +22,8 @@ const ALLOWED = new Set([
   'abpg-block',   // section hook; children (.abpg-grid) carry the styling
   'onClass', 'marked', 'on', 'menuClass',
   'playing',      // HeroVideo state inside className expression
+  'introClass',   // AreaPage intro section class chosen by area.seo
+
 ])
 
 const css = readFileSync('src/styles/global.css', 'utf8') +

@@ -5,7 +5,7 @@
  *
  * `accent` renders in oak after the main heading text.
  */
-export default function SectionHead({ watermark, children, accent, id }) {
+export default function SectionHead({ watermark, children, accent, id, as: Tag = 'h2' }) {
   return (
     <header className="shead" id={id}>
       <div className="shead-titles">
@@ -14,9 +14,9 @@ export default function SectionHead({ watermark, children, accent, id }) {
             {watermark}
           </span>
         )}
-        <h2>
+        <Tag>
           {children} {accent && <em>{accent}</em>}
-        </h2>
+        </Tag>
       </div>
       <span className="shead-rule" aria-hidden="true" />
     </header>

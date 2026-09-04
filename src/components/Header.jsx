@@ -91,7 +91,7 @@ export default function Header({ location, variant = 'main', nav = [], homeHref 
   return (
     <header className={cls} ref={barRef}>
       <div className="hdr-in">
-        <Logo to={homeHref} />
+        <Logo to={homeHref} alt={`${location.name} logo`} />
 
         <nav className="nav" aria-label="Main">
           {nav.map((n) => {

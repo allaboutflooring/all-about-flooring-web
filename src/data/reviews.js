@@ -68,3 +68,52 @@ export const GOOGLE_REVIEWS = [
     body: 'I am very pleased with the company, with the owner, Nir Neve, and his installers. Everyone was very professional and efficient. From moving the furniture, to the installation and putting the furniture back in place exactly as I asked of them. I highly recommend All About Flooring for your new floors. You don’t need to call for any other quotes. They are the best. And the owner looks you in the eye when he’s talking to you, unlike other companies. Please consider using All About Flooring.',
   },
 ]
+
+/**
+ * Google reviews shown in the St. Petersburg listing widget.
+ *
+ * Genuine reviews posted on the ALL ABOUT FLOORING ST. PETERSBURG Google
+ * listing (Place ID ChIJtVFXd2LA3w4RE4d-9GdPbAg). Kept separate from the
+ * Tampa GOOGLE_REVIEWS above so the two listings never mix. Fallback only -
+ * live values come from the Places API via /api/google-reviews?l=second.
+ * The carousel uses a letter avatar for every reviewer (same as Tampa), so
+ * no avatar image field is stored here.
+ */
+export const GOOGLE_REVIEWS_STPETE = [
+  {
+    by: 'Ranielen Carolina',
+    when: '8 months ago',
+    stars: 5,
+    body: 'All About Flooring St Pete did a fantastic job installing tile in my home. The floors came out beautiful — super clean lines and a perfect finish. Everyone I dealt with was friendly and professional. I’m very happy with the work and I’d definitely use them again!',
+  },
+  {
+    by: 'Kārlis R',
+    when: '8 months ago',
+    stars: 5,
+    body: 'The crew showed up right on time and explained everything before they started. They worked smoothly and left the place cleaner than they found it. The floors look incredible.',
+  },
+  {
+    by: 'Lucas Resende',
+    when: '8 months ago',
+    stars: 5,
+    body: 'Great work !!',
+  },
+  {
+    by: 'Chaya Kricheli',
+    when: '9 months ago',
+    stars: 5,
+    body: 'All About Flooring St. Pete did an excellent job installing our LVP floors. Clean work, great communication, and beautiful results. Highly recommend!',
+  },
+  {
+    by: 'jasonT Finney',
+    when: '10 months ago',
+    stars: 5,
+    body: 'We had new tile installed in our kitchen and bathrooms the craftsmanship is top-notch. Every tile is perfectly aligned and the finish is beautiful. Highly recommend their professional crew! 🧱🌟 …',
+  },
+  {
+    by: 'Crystal Clontz',
+    when: '10 months ago',
+    stars: 5,
+    body: 'All About Flooring did a fantastic job on our new hardwood floors! The crew was friendly, on time, and paid close attention to detail. Our living room looks absolutely stunning now 😍 Highly recommend them!',
+  },
+]

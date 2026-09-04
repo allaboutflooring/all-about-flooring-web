@@ -133,7 +133,9 @@ export function initScrollFx() {
       el.dataset.rv = 'zoom'
     }
   }
-  document.querySelectorAll('.shead h2, .sec-hd h2, .hero h1, .pghero h1').forEach(splitWords)
+  document
+    .querySelectorAll('.shead h2, .shead h3, .sec-hd h2, .hero h1, .pghero h1')
+    .forEach(splitWords)
 
   /* ── reveal ──────────────────────────────────────────────── */
   const marked = document.querySelectorAll('[data-rv]')

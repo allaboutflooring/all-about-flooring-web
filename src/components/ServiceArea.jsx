@@ -26,7 +26,7 @@ export default function ServiceArea({
       <span className="svca-dots" aria-hidden="true" />
 
       <div className="wrap">
-        <SectionHead watermark={watermark} accent={accent}>
+        <SectionHead watermark={watermark} accent={accent} as="h3">
           {heading}
         </SectionHead>
 

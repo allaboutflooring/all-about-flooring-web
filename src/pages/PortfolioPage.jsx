@@ -16,7 +16,7 @@ export default function PortfolioPage() {
       <Seo
         path="/portfolio"
         location={MAIN}
-        title={`Our Work | Kitchen, Bathroom & Flooring Projects in ${MAIN.city} | All About Flooring`}
+        title={`Flooring & Remodeling in ${MAIN.city} | All About Flooring`}
         description={`Kitchen backsplashes, bathroom tile and flooring installs across ${MAIN.city}. Real project photography from All About Flooring. Free in-home measure.`}
       />
 

@@ -13,12 +13,15 @@ import { SITE } from '../data/site'
  * with the mark occupying 369×239 of it, meaning over half the rendered
  * height was empty padding.
  */
-export default function Logo({ to = '/', sub, className = '' }) {
+export default function Logo({ to = '/', sub, className = '', alt = SITE.brand }) {
   return (
     <Link className={`logo ${className}`} to={to} aria-label={`${SITE.brand} - home`}>
       <span className="logo-stack">
-        <img className="logo-img logo-img--colour" src="/img/logo.png" alt={SITE.brand} width="369" height="239" />
-        <img className="logo-img logo-img--white" src="/img/logo-white.png" alt="" aria-hidden="true" width="369" height="239" />
+        {/* WebP artwork (visually identical to the retained PNGs). The white
+            knockout is a decorative duplicate, hidden from assistive tech; the
+            accessible name lives on the colour mark's alt. */}
+        <img className="logo-img logo-img--colour" src="/img/logo.webp" alt={alt} width="369" height="239" />
+        <img className="logo-img logo-img--white" src="/img/logo-white.webp" alt="" aria-hidden="true" width="369" height="239" />
       </span>
       {sub && <span className="logo-sub">{sub}</span>}
     </Link>

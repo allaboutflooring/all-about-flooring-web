@@ -14,6 +14,10 @@ import { useTexture } from '../lib/useTexture'
 export default function Cta({ content, location }) {
   const { variant = 'band' } = content
   const texRef = useTexture(content.tex || 'walnut', 0.5)
+  // Semantic heading level, driven by the content object so specific CTAs
+  // (e.g. the mid/late bands on service and location pages) can render as
+  // <h3> while keeping identical styling. Others stay <h2>.
+  const Heading = content.headingLevel === 3 ? 'h3' : 'h2'
 
   if (variant === 'banner') {
     return (
@@ -36,9 +40,9 @@ export default function Cta({ content, location }) {
           </picture>
 
           <div className="ctaN-in">
-            <h2>
+            <Heading>
               {content.headline} <em>{content.accent}</em>
-            </h2>
+            </Heading>
             {content.body && <p>{content.body}</p>}
             <a
               className="ctaN-btn"
@@ -62,7 +66,7 @@ export default function Cta({ content, location }) {
             </div>
             <div className="ctaS-body">
               {content.eyebrow && <p className="ctaS-eyebrow">{content.eyebrow}</p>}
-              <h2>{content.headline}</h2>
+              <Heading>{content.headline}</Heading>
               <p className="ctaS-lead">{content.body}</p>
               {content.points && (
                 <ul className="ctaS-pts">
@@ -91,7 +95,7 @@ export default function Cta({ content, location }) {
       <section className="ctaQ">
         <div className="wrap ctaQ-in">
           <div>
-            <h2>{content.headline}</h2>
+            <Heading>{content.headline}</Heading>
             <p>{content.body}</p>
           </div>
           <div className="ctaQ-acts">
@@ -111,7 +115,7 @@ export default function Cta({ content, location }) {
     <section className="ctaB">
       <div className="wrap ctaB-in">
         <div>
-          <h2>{content.headline}</h2>
+          <Heading>{content.headline}</Heading>
           {content.body && <p>{content.body}</p>}
         </div>
         <div className="ctaB-acts">

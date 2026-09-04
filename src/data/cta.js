@@ -33,6 +33,7 @@ export const CTA_BANNER = {
 
 export const CTA_MID = {
   variant: 'split',
+  headingLevel: 3,
   eyebrow: 'No obligation',
   headline: 'The measure is free. So is the advice.',
   body: 'We come out, measure every room, moisture-test the subfloor and show you samples in your own light. You get an itemised written price within 48 hours. If you go elsewhere with it, that is genuinely fine.',
@@ -43,6 +44,7 @@ export const CTA_MID = {
 
 export const CTA_LATE = {
   variant: 'banner',
+  headingLevel: 3,
   headline: 'Every project started as',
   accent: 'a phone call',
   body: 'Tell us the rooms and we will bring samples, measure, and put a fixed price in writing.',
@@ -59,6 +61,7 @@ export const CTA_LATE = {
  */
 export const CTA_CLOSE = {
   variant: 'banner',
+  headingLevel: 3,
   headline: 'Get started with',
   accent: 'All About Flooring',
   body: 'Free in-home measure across Tampa Bay. Written price within 48 hours.',

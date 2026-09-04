@@ -4,24 +4,10 @@ import PageHero from '../components/PageHero'
 import Tick from '../components/Tick'
 import Services from '../components/Services'
 import ServiceArea from '../components/ServiceArea'
+import ServiceSeoContent, { Check } from '../components/ServiceSeoContent'
 import { SERVICE_PAGES } from '../data/services'
 import { SERVICE_CARDS } from '../data/content'
 import { MAIN, MAIN_AREA_INTRO } from '../data/locations'
-
-function Check() {
-  return (
-    <svg viewBox="0 0 20 20" width="19" height="19" aria-hidden="true">
-      <path
-        d="M4 10.6l4 4L16.5 6"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.8"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  )
-}
 
 /**
  * One service. Banner, the specific service, the rest of the list,
@@ -36,15 +22,8 @@ export default function ServicePage({ slug }) {
   const workBase = work ? `/img/work/${work}` : null
   const workWebp = work && page.webp !== false
 
-  return (
-    <MainLayout>
-      <Seo
-        path={page.path}
-        location={MAIN}
-        title={`${page.title} in ${MAIN.city} | All About Flooring`}
-        description={page.description}
-      />
-
+  const body = (
+    <>
       <PageHero
         title={page.heroTitle}
         crumbs={[
@@ -125,17 +104,43 @@ export default function ServicePage({ slug }) {
         </div>
       </section>
 
-      <Services
-        heading="Featured"
-        accent="Services"
-        intro={null}
-        items={SERVICE_CARDS.filter((s) => s.href !== page.path)}
-      />
+      {page.seo ? (
+        <ServiceSeoContent
+          seo={page.seo}
+          featured={
+            <Services
+              heading="Featured"
+              accent="Services"
+              intro={null}
+              items={SERVICE_CARDS.filter((s) => s.href !== page.path)}
+            />
+          }
+        />
+      ) : (
+        <Services
+          heading="Featured"
+          accent="Services"
+          intro={null}
+          items={SERVICE_CARDS.filter((s) => s.href !== page.path)}
+        />
+      )}
 
       <ServiceArea
         primary={MAIN}
         intro={MAIN_AREA_INTRO}
       />
+    </>
+  )
+
+  return (
+    <MainLayout>
+      <Seo
+        path={page.path}
+        location={MAIN}
+        title={page.metaTitle || `${page.title} in ${MAIN.city} | All About Flooring`}
+        description={page.metaDescription || page.description}
+      />
+      {page.seo ? <div className="svcseo-page">{body}</div> : body}
     </MainLayout>
   )
 }

@@ -1,7 +1,11 @@
-import { useState } from 'react'
+import { useState, useRef, useEffect, useLayoutEffect } from 'react'
 import { Head } from 'vite-react-ssg'
 import SectionHead from './SectionHead'
 import { FAQS } from '../data/faqs'
+
+// useLayoutEffect on the client (runs before paint, so no flicker), useEffect
+// on the server (vite-react-ssg) to avoid the SSR warning.
+const useIsoLayoutEffect = typeof window !== 'undefined' ? useLayoutEffect : useEffect
 
 /**
  * FAQ accordion.
@@ -17,6 +21,22 @@ import { FAQS } from '../data/faqs'
  */
 export default function Faqs({ items = FAQS, watermark = 'FAQ', heading = 'Questions we get', accent = 'every week' }) {
   const [open, setOpen] = useState(0)
+  const listRef = useRef(null)
+  const mounted = useRef(false)
+
+  // scrollFx reveals `.faq-i` by adding `is-in` straight to the DOM. Toggling
+  // the accordion re-renders and React rewrites the element's className,
+  // dropping `is-in` so the item snaps back to its hidden pre-reveal state
+  // until the next scroll. Re-assert `is-in` before paint on every open change
+  // (the items are on-screen whenever the user is clicking). The first mount is
+  // skipped so the initial scroll-in still plays its reveal animation.
+  useIsoLayoutEffect(() => {
+    if (!mounted.current) {
+      mounted.current = true
+      return
+    }
+    listRef.current?.querySelectorAll('.faq-i').forEach((el) => el.classList.add('is-in'))
+  }, [open])
 
   const schema = {
     '@context': 'https://schema.org',
@@ -39,7 +59,7 @@ export default function Faqs({ items = FAQS, watermark = 'FAQ', heading = 'Quest
           {heading}
         </SectionHead>
 
-        <div className="faq-list">
+        <div className="faq-list" ref={listRef}>
           {items.map((f, i) => {
             const isOpen = open === i
             return (

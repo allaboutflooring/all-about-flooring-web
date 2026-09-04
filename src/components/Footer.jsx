@@ -21,7 +21,7 @@ export default function Footer({
       <div className="wrap">
         <div className="ftr-grid">
           <div>
-            <Logo to={homeHref} sub="FLOORING CONTRACTOR" />
+            <Logo to={homeHref} sub="FLOORING CONTRACTOR" alt={`${location.name} logo`} />
             <p className="ftr-blurb">{SITE.tagline}</p>
             {facebook && instagram && (
               <p className="ftr-socials">

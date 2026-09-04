@@ -72,9 +72,9 @@ export default function InlineForm({
 
       <div className="wrap qform-in">
         <div className="qform-head">
-          <h2>
+          <h3>
             {heading} <em>{accent}</em>
-          </h2>
+          </h3>
           <p>{body}</p>
         </div>
 
