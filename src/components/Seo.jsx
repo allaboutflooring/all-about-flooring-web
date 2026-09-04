@@ -1,63 +1,68 @@
 import { Head } from 'vite-react-ssg'
 import { SITE } from '../data/site'
+import {
+  LOCAL_BUSINESS_SCHEMA,
+  ST_PETE_LOCAL_BUSINESS_SCHEMA,
+  ORGANIZATION_SCHEMA,
+} from '../data/businessSchema'
+import { STPETE_BASE } from '../data/stpete'
 
 /**
- * Per-page head + LocalBusiness schema.
+ * Per-page <head> + structured data.
  *
- * Each GBP listing gets its own LocalBusiness node with its own @id,
- * address, phone and geo. That is what lets Google associate this page
- * with that specific profile instead of blending the two listings.
+ * Business schema: a single Organization node is emitted site-wide, and the
+ * LocalBusiness node is emitted on the homepage only. Both come verbatim from
+ * data/businessSchema.js. The previous per-page HomeAndConstructionBusiness
+ * node is no longer produced here.
  *
  * NOTE: children of <Head> must be flat elements. react-helmet does not
  * walk into Fragments, so anything wrapped in <>…</> is silently dropped.
  */
-export default function Seo({ title, description, path = '/', location, noindex = false }) {
+export default function Seo({ title, description, path = '/', location, service, noindex = false }) {
   const url = `${SITE.origin}${path}`
-  // Canonicals carry a trailing slash site-wide. og:url and the LocalBusiness
-  // schema @id/url keep the slug-only `url`, so structured data is unchanged.
+  // Canonicals carry a trailing slash site-wide. og:url and the Service schema
+  // @id/url keep the slug-only `url` for og:url; canonical adds the slash.
   const canonical = path.endsWith('/') ? url : `${url}/`
+  const isHome = path === '/'
+  const isStPeteLanding = path === STPETE_BASE
 
-  const schema = location && {
-    '@context': 'https://schema.org',
-    '@type': 'HomeAndConstructionBusiness',
-    '@id': `${url}#${location.key}`,
-    name: location.name,
-    legalName: location.legalName,
-    description: SITE.description,
-    url,
-    logo: `${SITE.origin}${SITE.logo}`,
-    image: `${SITE.origin}${SITE.ogImage}`,
-    telephone: location.phoneE164,
-    email: location.email,
-    foundingDate: location.founded,
-    address: {
-      '@type': 'PostalAddress',
-      ...(location.street ? { streetAddress: location.street } : {}),
-      addressLocality: location.city,
-      addressRegion: location.region,
-      ...(location.postal ? { postalCode: location.postal } : {}),
-      addressCountry: location.country,
-    },
-    geo: {
-      '@type': 'GeoCoordinates',
-      latitude: location.geo.lat,
-      longitude: location.geo.lng,
-    },
-    openingHoursSpecification: location.hoursSchema.map((h) => ({
-      '@type': 'OpeningHoursSpecification',
-      dayOfWeek: h.days,
-      opens: h.open,
-      closes: h.close,
-    })),
-    areaServed: location.serviceAreas.map((a) => ({ '@type': 'Place', name: a })),
-    knowsAbout: [location.primaryCategory, ...location.secondaryCategories],
-    sameAs: [
-      location.gbpProfileUrl,
-      ...(location.socials
-        ? [location.socials.facebook, location.socials.instagram]
-        : [SITE.socials?.facebook, SITE.socials?.instagram]),
-    ].filter(Boolean),
-  }
+  // Optional per-service structured data for a service page. The Service node
+  // links to the business listing by @id only (`provider` is a bare reference,
+  // not an embedded node). The page's FAQs are emitted as a FAQPage node. Both
+  // are only rendered when `service` is supplied (the 20 optimised service
+  // pages), which therefore carry Service + FAQPage plus the site-wide
+  // Organization node.
+  const serviceSchema =
+    service &&
+    location && {
+      '@context': 'https://schema.org',
+      '@type': 'Service',
+      '@id': `${canonical}#service`,
+      name: service.name,
+      serviceType: service.name,
+      ...(service.description ? { description: service.description } : {}),
+      url: canonical,
+      ...(service.image ? { image: service.image } : {}),
+      provider: {
+        '@id':
+          location.key === 'second'
+            ? ST_PETE_LOCAL_BUSINESS_SCHEMA['@id']
+            : LOCAL_BUSINESS_SCHEMA['@id'],
+      },
+      areaServed: location.serviceAreas.map((a) => ({ '@type': 'Place', name: a })),
+    }
+
+  const faqSchema = service?.faqs?.length
+    ? {
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        mainEntity: service.faqs.map((f) => ({
+          '@type': 'Question',
+          name: f.q,
+          acceptedAnswer: { '@type': 'Answer', text: f.a },
+        })),
+      }
+    : null
 
   return (
     <Head>
@@ -85,8 +90,18 @@ export default function Seo({ title, description, path = '/', location, noindex 
       <meta name="twitter:image:alt" content={SITE.listingName} />
       {location ? <meta name="geo.region" content={location.region} /> : null}
       {location ? <meta name="geo.placename" content={location.city} /> : null}
-      {location ? (
-        <script type="application/ld+json">{JSON.stringify(schema)}</script>
+      <script type="application/ld+json">{JSON.stringify(ORGANIZATION_SCHEMA)}</script>
+      {isHome ? (
+        <script type="application/ld+json">{JSON.stringify(LOCAL_BUSINESS_SCHEMA)}</script>
+      ) : null}
+      {isStPeteLanding ? (
+        <script type="application/ld+json">{JSON.stringify(ST_PETE_LOCAL_BUSINESS_SCHEMA)}</script>
+      ) : null}
+      {serviceSchema ? (
+        <script type="application/ld+json">{JSON.stringify(serviceSchema)}</script>
+      ) : null}
+      {faqSchema ? (
+        <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
       ) : null}
     </Head>
   )

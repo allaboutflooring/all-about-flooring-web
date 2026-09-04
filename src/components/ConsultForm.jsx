@@ -31,7 +31,6 @@ export default function ConsultForm({
 }) {
   const [v, setV] = useState(EMPTY)
   const [errors, setErrors] = useState({})
-  const [sent, setSent] = useState(false)
 
   const validate = (vals) => {
     const e = {}
@@ -62,16 +61,17 @@ export default function ConsultForm({
   }
 
   const onSubmit = (ev) => {
-    ev.preventDefault()
     const e = validate(v)
     setErrors(e)
     const first = Object.keys(e)[0]
     if (first) {
+      // Invalid: block the submit and move focus to the first bad field.
+      ev.preventDefault()
       document.getElementById(`cf-${first}`)?.focus()
-      return
     }
-    // Remove this early return to let Netlify Forms take the POST natively.
-    setSent(true)
+    // Valid: do NOT preventDefault — Netlify Forms handles the native POST and
+    // the browser navigates to Netlify's submission-received response. No inline
+    // success state is shown, so "Thanks" can never appear without a real POST.
   }
 
   const field = (name) => ({
@@ -96,16 +96,7 @@ export default function ConsultForm({
         <div className="cf-left">
           <h2>{heading}</h2>
 
-          {sent ? (
-            <div className="cf-ok" role="status">
-              <strong>Thanks - we&rsquo;ve got it.</strong>
-              <p>
-                We&rsquo;ll call within one working day to book your measure. If it&rsquo;s urgent,
-                call {location.phone}.
-              </p>
-            </div>
-          ) : (
-            <form
+          <form
               className="cf-form"
               name={formName}
               method="POST"
@@ -186,7 +177,6 @@ export default function ConsultForm({
                 <i aria-hidden="true"><Arrow /></i>
               </button>
             </form>
-          )}
         </div>
 
         <div className="cf-right">

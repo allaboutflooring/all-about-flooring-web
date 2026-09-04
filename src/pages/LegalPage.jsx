@@ -31,7 +31,25 @@ export default function LegalPage({ slug }) {
           {page.sections.map((s) => (
             <article key={s.heading}>
               <h2>{s.heading}</h2>
-              {s.body.map((p) => (
+              {s.body?.map((p) => (
+                <p key={p}>{p}</p>
+              ))}
+              {s.subsections?.map((sub) => (
+                <div className="legal-sub" key={sub.heading}>
+                  <h3>{sub.heading}</h3>
+                  {sub.body.map((p) => (
+                    <p key={p}>{p}</p>
+                  ))}
+                </div>
+              ))}
+              {s.list && (
+                <ul className="legal-list">
+                  {s.list.map((it) => (
+                    <li key={it}>{it}</li>
+                  ))}
+                </ul>
+              )}
+              {s.note?.map((p) => (
                 <p key={p}>{p}</p>
               ))}
             </article>

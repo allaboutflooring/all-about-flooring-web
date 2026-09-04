@@ -15,6 +15,8 @@ export default function Footer({
   const cityLine = [location.city, location.region].filter(Boolean).join(', ')
   const second = variant === 'second'
   const cls = ['ftr', second ? 'ftr--second' : ''].filter(Boolean).join(' ')
+  // Location-aware legal name: Tampa as-is, St. Petersburg in its GBP styling.
+  const copyrightName = second ? location.name.toUpperCase() : location.name
 
   return (
     <footer className={cls}>
@@ -61,7 +63,7 @@ export default function Footer({
                   <br />
                 </>
               ) : null}
-              {cityLine}
+              <a href={location.mapUrl} target="_blank" rel="noreferrer">{cityLine}</a>
               {location.postal ? ` ${location.postal}` : ''}
               <br />
               <a href={`tel:${location.phoneE164}`}>{location.phone}</a>
@@ -74,8 +76,8 @@ export default function Footer({
         </div>
 
         <div className="ftr-bar">
-          <span>© {new Date().getFullYear()} {SITE.brand.toUpperCase()}</span>
-          <span>
+          <span className="ftr-copy">© {new Date().getFullYear()} {copyrightName}. All Rights Reserved.</span>
+          <span className="ftr-legal">
             <a href="/privacy-policy">Privacy</a>
             {' · '}
             <a href="/terms-and-conditions">Terms</a>

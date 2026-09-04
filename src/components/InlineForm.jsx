@@ -32,7 +32,6 @@ export default function InlineForm({
 }) {
   const [v, setV] = useState(EMPTY)
   const [errors, setErrors] = useState({})
-  const [sent, setSent] = useState(false)
 
   const validate = (vals) => {
     const e = {}
@@ -55,15 +54,17 @@ export default function InlineForm({
   }
 
   const onSubmit = (ev) => {
-    ev.preventDefault()
     const e = validate(v)
     setErrors(e)
     const first = Object.keys(e)[0]
     if (first) {
+      // Invalid: block the submit and move focus to the first bad field.
+      ev.preventDefault()
       document.getElementById(`qf-${first}`)?.focus()
-      return
     }
-    setSent(true)
+    // Valid: do NOT preventDefault — Netlify Forms handles the native POST and
+    // the browser navigates to Netlify's submission-received response. No inline
+    // success state is shown, so "Thanks" can never appear without a real POST.
   }
 
   return (
@@ -78,13 +79,7 @@ export default function InlineForm({
           <p>{body}</p>
         </div>
 
-        {sent ? (
-          <div className="qform-ok" role="status">
-            <strong>Thanks - we&rsquo;ve got it.</strong>
-            <p>We&rsquo;ll call within one working day. If it&rsquo;s urgent, call {location.phone}.</p>
-          </div>
-        ) : (
-          <form
+        <form
             className="qform-row"
             name={formName}
             method="POST"
@@ -167,7 +162,6 @@ export default function InlineForm({
 
             <button className="qform-btn" type="submit">Get my quote</button>
           </form>
-        )}
 
         <p className="qform-alt">
           Prefer to talk? <a href={`tel:${location.phoneE164}`}>{location.phone}</a>

@@ -30,11 +30,7 @@ export const MAIN = {
   founded: '2009',
   primaryCategory: 'Flooring contractor',
   secondaryCategories: ['Kitchen remodeler', 'Bathroom remodeler'],
-  hours: [
-    { d: 'Mon-Fri', h: '07:00 - 17:00' },
-    { d: 'Sat', h: '08:00 - 13:00' },
-    { d: 'Sun', h: 'Closed' },
-  ],
+  hours: [{ d: 'Mon-Sun', h: 'Open 24 hours' }],
   hoursSchema: [
     { days: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'], open: '07:00', close: '17:00' },
     { days: ['Saturday'], open: '08:00', close: '13:00' },
@@ -43,6 +39,7 @@ export const MAIN = {
   mapEmbed:
     'https://maps.google.com/maps?q=All+About+Flooring+Tampa+Bay+Contractors,+Tampa,+FL&z=10&output=embed',
   mapsShareUrl: 'https://maps.app.goo.gl/3RiTe9zUQBCvXxFb6',
+  mapUrl: 'https://maps.app.goo.gl/GmZE5mfAh23CPhga9',
   gbpProfileUrl: 'https://maps.app.goo.gl/3RiTe9zUQBCvXxFb6',
   placeId: 'ChIJJa3ukc6izU8Rw_oaL_6dD7c',
   placeCid: '0x4fcda2ce91eead25:0xb70f9dfe2f1afac3',
@@ -98,11 +95,7 @@ export const SECOND = {
   founded: '2009',
   primaryCategory: 'Flooring contractor',
   secondaryCategories: ['Kitchen remodeler', 'Bathroom remodeler'],
-  hours: [
-    { d: 'Mon-Fri', h: '07:00 - 17:00' },
-    { d: 'Sat', h: '08:00 - 13:00' },
-    { d: 'Sun', h: 'Closed' },
-  ],
+  hours: [{ d: 'Mon-Sun', h: 'Open 24 hours' }],
   hoursSchema: [
     { days: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'], open: '07:00', close: '17:00' },
     { days: ['Saturday'], open: '08:00', close: '13:00' },
@@ -111,6 +104,7 @@ export const SECOND = {
   mapEmbed:
     'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d214711.87716437018!2d-82.69306759999999!3d27.79405895!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xedfc062775751b5%3A0x86c4f67f47e8713!2sALL%20ABOUT%20FLOORING%20ST.%20PETERSBURG!5e1!3m2!1sen!2s!4v1788335807294!5m2!1sen!2s',
   mapsShareUrl: 'https://maps.app.goo.gl/CoHyWqmuxMLeoMcb8',
+  mapUrl: 'https://maps.app.goo.gl/q3h9rv71GKRPzKbG8',
   gbpProfileUrl: 'https://maps.app.goo.gl/CoHyWqmuxMLeoMcb8',
   placeId: 'ChIJtVFXd2LA3w4RE4d-9GdPbAg',
   placeCid: '0xedfc062775751b5:0x86c4f67f47e8713',

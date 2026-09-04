@@ -1174,6 +1174,19 @@ html.nav-open body {
 .ftr-blurb { color: var(--muted); font-size: 15px; max-width: 34ch; margin-top: 18px; }
 .ftr-socials { margin-top: 14px; font-size: 13px; }
 .ftr-nap { font-family: var(--f-mono); font-size: 13.5px; color: var(--muted); line-height: 1.75; font-style: normal; }
+.ftr-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px 28px;
+  margin-top: clamp(40px, 5vw, 64px);
+  padding: clamp(20px, 2.4vw, 26px) 0;
+  border-top: 1px solid var(--line);
+  font-size: 13px;
+}
+.ftr-copy { min-width: 0; }
+.ftr-legal { white-space: nowrap; }
 .ftr-bar a { color: inherit; text-decoration: none; }
 .ftr-bar a:hover { color: var(--oak); }
 
@@ -3064,6 +3077,20 @@ main { position: relative; z-index: 0; isolation: isolate; }
 }
 .legal p { color: var(--muted); font-size: 16.5px; }
 .legal p + p { margin-top: 12px; }
+.legal-sub { margin-top: 22px; }
+.legal h3 {
+  font-size: clamp(17px, 1.7vw, 21px);
+  margin-bottom: 8px;
+}
+.legal-list {
+  margin: 12px 0 0;
+  padding-left: 22px;
+  color: var(--muted);
+  font-size: 16.5px;
+}
+.legal-list li { margin-top: 6px; }
+.legal-list li + li { margin-top: 8px; }
+.legal .legal-list + p { margin-top: 12px; }
 
 .sel-opt.is-selected { font-weight: 600; }
 

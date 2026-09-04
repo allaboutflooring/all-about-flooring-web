@@ -7,7 +7,7 @@ export const SITE = {
     'All About Flooring Tampa Bay Contractors — hardwood, tile and vinyl flooring installation plus kitchen and bathroom renovation across Tampa Bay. Free in-home measure, written price in 48 hours.',
   origin: 'https://flooringcontractorstampafl.com',
   logo: '/img/logo.png',
-  ogImage: '/img/og.jpg',
+  ogImage: '/img/og.webp',
   leadForm: 'new lead - main website',
   socials: {
     facebook: 'https://www.facebook.com/profile.php?id=61553684777260',

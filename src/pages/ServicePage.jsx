@@ -8,6 +8,7 @@ import ServiceSeoContent, { Check } from '../components/ServiceSeoContent'
 import { SERVICE_PAGES } from '../data/services'
 import { SERVICE_CARDS } from '../data/content'
 import { MAIN, MAIN_AREA_INTRO } from '../data/locations'
+import { serviceSchemaData } from '../data/serviceSchema'
 
 /**
  * One service. Banner, the specific service, the rest of the list,
@@ -137,6 +138,7 @@ export default function ServicePage({ slug }) {
       <Seo
         path={page.path}
         location={MAIN}
+        service={serviceSchemaData(page)}
         title={page.metaTitle || `${page.title} in ${MAIN.city} | All About Flooring`}
         description={page.metaDescription || page.description}
       />

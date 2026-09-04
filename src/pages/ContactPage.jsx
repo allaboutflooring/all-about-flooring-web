@@ -6,7 +6,7 @@ import ConsultForm from '../components/ConsultForm'
 import MapPanel from '../components/MapPanel'
 import SectionHead from '../components/SectionHead'
 import { CONTACT_PAGE } from '../data/contact'
-import { MAIN, mapsDirectionsUrl } from '../data/locations'
+import { MAIN } from '../data/locations'
 import { SITE } from '../data/site'
 import Cta from '../components/Cta'
 import { CTA_LATE } from '../data/cta'
@@ -37,7 +37,7 @@ export default function ContactPage() {
       key: 'visit',
       label: 'Visit us',
       value: `${MAIN.city}, ${MAIN.region}`,
-      href: mapsDirectionsUrl(MAIN),
+      href: MAIN.mapUrl,
       external: true,
     },
   ]

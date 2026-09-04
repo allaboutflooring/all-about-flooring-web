@@ -41,7 +41,8 @@ const sitemap =
   paths
     .map(
       (p) =>
-        `  <url>\n    <loc>${origin}${p === '/' ? '/' : p}</loc>\n` +
+        // Trailing slash to match the page canonical (Seo.jsx). Homepage stays "/".
+        `  <url>\n    <loc>${origin}${p === '/' ? '/' : `${p}/`}</loc>\n` +
         `    <lastmod>${today}</lastmod>\n` +
         `    <priority>${p === '/' ? '1.0' : p.includes('st-petersburg') ? '0.8' : '0.7'}</priority>\n  </url>`
     )

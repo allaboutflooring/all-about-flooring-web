@@ -14,6 +14,7 @@ import ServiceSeoContent, {
 import Cta from '../components/Cta'
 import LocationMap from '../components/LocationMap'
 import { SECOND } from '../data/locations'
+import { serviceSchemaData } from '../data/serviceSchema'
 import { GOOGLE_REVIEWS_STPETE } from '../data/reviews'
 import { CTA_MID, CTA_LATE } from '../data/cta'
 import {
@@ -210,6 +211,11 @@ export default function StPeteInner({ kind, slug }) {
     long = true
   }
 
+  // Non-null only for the optimised St. Petersburg service pages; area,
+  // hub and legacy/hidden service pages resolve to null and emit no Service
+  // schema. Provider/areaServed inside <Seo> stay bound to SECOND (St. Pete).
+  const svcSchema = serviceSchemaData(page)
+
   const cards = page
     ? STPETE_SERVICE_CARDS.filter((s) => s.href !== page.path)
     : STPETE_SERVICE_CARDS
@@ -225,7 +231,7 @@ export default function StPeteInner({ kind, slug }) {
   if (seoService) {
     return (
       <LocationLayout>
-        <Seo path={path} location={SECOND} title={title} description={description} />
+        <Seo path={path} location={SECOND} service={svcSchema} title={title} description={description} />
         <div className="svcseo-page">
           <PageHero title={heroTitle} crumbs={crumbs} long={long} />
           <ServiceAbout page={page} />
