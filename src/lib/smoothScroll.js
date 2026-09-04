@@ -78,6 +78,9 @@ export function initSmoothScroll() {
   function onWheel(e) {
     if (disabled) return
     if (e.ctrlKey || e.metaKey || Math.abs(e.deltaX) > Math.abs(e.deltaY)) return
+    // An open custom listbox (the Service dropdown) manages its own scroll.
+    // Let the wheel scroll it natively instead of hijacking it for the page.
+    if (e.target?.closest?.('.sel-list')) return
     // Native page scroll while the walkthrough is on screen. The stage
     // is sticky, so the lerp looked like the page had jammed.
     if (inRooms()) {

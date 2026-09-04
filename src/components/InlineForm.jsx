@@ -69,7 +69,9 @@ export default function InlineForm({
 
   return (
     <section className="qform-band" id="get-started">
-      <span className="qform-tile" aria-hidden="true" />
+      <span className="qform-bg" aria-hidden="true">
+        <span className="qform-tile" />
+      </span>
 
       <div className="wrap qform-in">
         <div className="qform-head">
