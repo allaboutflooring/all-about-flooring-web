@@ -22,7 +22,7 @@ export default function Footer({
     <footer className={cls}>
       <div className="wrap">
         <div className="ftr-grid">
-          <div>
+          <div className="ftr-col ftr-col--brand">
             <Logo to={homeHref} sub="FLOORING CONTRACTOR" alt={`${location.name} logo`} />
             <p className="ftr-blurb">{SITE.tagline}</p>
             {facebook && instagram && (
@@ -34,7 +34,7 @@ export default function Footer({
             )}
           </div>
 
-          <div>
+          <div className="ftr-col ftr-col--services">
             <p className="ftr-h">Services</p>
             <ul>
               {services.map((s) => (
@@ -45,7 +45,7 @@ export default function Footer({
             </ul>
           </div>
 
-          <div>
+          <div className="ftr-col ftr-col--links">
             <p className="ftr-h">{second ? 'Locations' : 'Company'}</p>
             <ul>
               {(second && areaLinks ? areaLinks : nav).map((n) => (
@@ -54,7 +54,7 @@ export default function Footer({
             </ul>
           </div>
 
-          <div>
+          <div className="ftr-col ftr-col--contact">
             <p className="ftr-h">{location.isPrimary ? 'Main location' : `${location.city} location`}</p>
             <address className="ftr-nap">
               {location.street ? (

@@ -61,7 +61,7 @@ export default function SecondLocation() {
       <Seo
         path={STPETE_BASE}
         location={SECOND}
-        title="Flooring Contractor | All About Flooring St. Petersburg"
+        title="Flooring Contractor in St. Petersburg - All About Flooring"
         description="All About Flooring St. Petersburg, Flooring Contractor in St. Petersburg for floor installation, replacement, and residential flooring upgrades. Book Now!"
       />
 

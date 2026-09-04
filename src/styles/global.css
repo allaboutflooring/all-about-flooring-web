@@ -1202,6 +1202,12 @@ html.nav-open body {
   .svcs { grid-template-columns: 1fr; }
   .fgrid { grid-template-columns: 1fr; }
   .ftr-grid { grid-template-columns: 1fr; }
+  /* Mobile footer: drop the two link columns (Services + Company/Locations),
+     enlarge the brand logo, and scale up the contact column for legibility. */
+  .ftr-col--services, .ftr-col--links { display: none; }
+  .ftr-col--brand .logo-img { height: 72px; }
+  .ftr-col--contact .ftr-h { font-size: 12.5px; }
+  .ftr-col--contact .ftr-nap { font-size: 16.5px; line-height: 1.8; }
 }
 
 /* NAP card + map (restored) */
