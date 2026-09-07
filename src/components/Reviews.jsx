@@ -223,28 +223,23 @@ export default function Reviews({ location, items = GOOGLE_REVIEWS }) {
 /**
  * Client-supplied "Leave Us A Review" widget (Review Link Generator).
  *
- * The markup + <style> below are the client's HTML verbatim, rendered via
+ * The popup markup + <style> below are the client's HTML verbatim, rendered via
  * dangerouslySetInnerHTML so every id/class/inline style is preserved exactly.
  *
- * The client's original drop-in wired its controls imperatively inside a
- * one-shot DOMContentLoaded callback that was re-dispatched synthetically after
- * the <script> was injected. That bound listeners to a single snapshot of the
- * DOM, with no re-wiring and no cleanup, so the "Leave Us A Review" button and
- * the close (×) could end up attached to nothing while the hash-open path -
- * which resolves elements live on a window listener - kept working.
+ * The trigger button, however, is a real React <button>. A raw-HTML button
+ * injected via dangerouslySetInnerHTML loses its DOM-node identity whenever
+ * React re-creates that island (on hydration and on any parent re-render, e.g.
+ * the live-reviews fetch), which orphaned a manually-attached click listener
+ * and left the visible button dead in production while the close (×) and the
+ * #review hash - which act on the client-only portal / a window listener - kept
+ * working. Letting React own the button and its onClick keeps the open handler
+ * bound across re-renders.
  *
- * Here the same behaviour (open/close, star rating, low-rating feedback flow,
- * tracking and the #review hash) is wired in a React effect scoped to the
- * widget's own nodes via refs, with a cleanup that removes every listener. The
- * effect re-runs on mount/remount, so the controls are always bound to the live
- * DOM and never wired more than once.
+ * The popup's own controls (close/backdrop, star rating, low-rating feedback
+ * flow, tracking and the #review hash) live inside the client-only portal and
+ * are wired in a React effect scoped via the popup ref, with a cleanup that
+ * removes every listener. The effect re-runs on mount/remount.
  */
-const RLG_BUTTON = `<!-- Begin Review Link Generator Widget -->
-<!-- Review Button -->
-<div style="text-align: center;">
-    <button id="rlgOpenPopup" class="rlg-review-button">Leave Us A Review</button>
-</div>`
-
 function rlgPopupHtml(businessName) {
   return `<!-- Popup Overlay -->
 <div id="rlgPopup" class="rlg-popup-overlay">
@@ -604,31 +599,43 @@ function ReviewWidget({ locationKey }) {
   // renders above the fixed site header. Gated on `mounted` so the portal is
   // client-only (no SSR/hydration mismatch; the portal target is document.body).
   const [mounted, setMounted] = useState(false)
-  const buttonRef = useRef(null)
   const popupRef = useRef(null)
-  // Memoised so the injected HTML keeps a stable identity across the Reviews
-  // section's re-renders (e.g. the live-reviews fetch), leaving the portalled
-  // popup nodes - and the listeners bound to them below - untouched.
+  // Memoised so the injected popup HTML keeps a stable identity across the
+  // Reviews section's re-renders (e.g. the live-reviews fetch), leaving the
+  // portalled popup nodes - and the listeners bound to them below - untouched.
   const popupHtml = useMemo(() => rlgPopupHtml(cfg.businessName), [cfg.businessName])
+
+  // Open the popup from the React-owned button. Resolves the overlay live from
+  // the popup ref (safe if React ever re-creates the portal node) and preserves
+  // the widget_open tracking beacon. `source` is a string on the hash path;
+  // when used directly as an onClick handler it receives the event object, so
+  // any non-string value is treated as a button open.
+  const openReviewPopup = useCallback(
+    (source) => {
+      const overlay = popupRef.current?.querySelector('#rlgPopup')
+      if (!overlay) return
+      overlay.style.display = 'block'
+      document.body.style.overflow = 'hidden'
+      rlgTrackEvent('widget_open', cfg, { source: typeof source === 'string' ? source : 'button' })
+    },
+    [cfg]
+  )
 
   useEffect(() => {
     setMounted(true)
   }, [])
 
-  // Wire every control on the widget's own nodes (found via refs, not global
-  // ids), and tear the listeners down on unmount. Re-runs whenever the widget
-  // mounts/remounts, so the button and close (×) are always bound to the live
-  // DOM - no synthetic DOMContentLoaded, no one-shot global script.
+  // Wire the popup's own controls on the portal's live nodes (via the popup
+  // ref) and tear the listeners down on unmount. Re-runs on mount/remount. The
+  // button's open path is handled by React's onClick, so it is not wired here.
   useEffect(() => {
     if (!mounted) return undefined
-    const openWrap = buttonRef.current
     const root = popupRef.current
-    if (!openWrap || !root) return undefined
+    if (!root) return undefined
 
-    const openBtn = openWrap.querySelector('#rlgOpenPopup')
     const overlay = root.querySelector('#rlgPopup')
     const closeBtn = root.querySelector('#rlgClosePopup')
-    if (!openBtn || !overlay || !closeBtn) return undefined
+    if (!overlay || !closeBtn) return undefined
 
     const starWrap = root.querySelector('.rlg-star-rating-wrapper')
     const feedbackForm = root.querySelector('#rlgFeedbackForm')
@@ -640,16 +647,10 @@ function ReviewWidget({ locationKey }) {
 
     let lastRating = 0
 
-    const openPopup = (source) => {
-      overlay.style.display = 'block'
-      document.body.style.overflow = 'hidden'
-      rlgTrackEvent('widget_open', cfg, { source: source || 'button' })
-    }
     const closePopup = () => {
       overlay.style.display = 'none'
       document.body.style.overflow = 'auto'
     }
-    const onOpen = () => openPopup('button')
     const onOverlay = (e) => {
       if (e.target === overlay) closePopup()
     }
@@ -707,10 +708,9 @@ function ReviewWidget({ locationKey }) {
         })
     }
     const onHashChange = () => {
-      if (rlgNormalizeHash(window.location.hash) === RLG_PLATFORM_HASH) openPopup('hash')
+      if (rlgNormalizeHash(window.location.hash) === RLG_PLATFORM_HASH) openReviewPopup('hash')
     }
 
-    openBtn.addEventListener('click', onOpen)
     closeBtn.addEventListener('click', closePopup)
     overlay.addEventListener('click', onOverlay)
     if (reviewBtn) reviewBtn.addEventListener('click', onReviewSubmit)
@@ -720,7 +720,6 @@ function ReviewWidget({ locationKey }) {
     onHashChange()
 
     return () => {
-      openBtn.removeEventListener('click', onOpen)
       closeBtn.removeEventListener('click', closePopup)
       overlay.removeEventListener('click', onOverlay)
       if (reviewBtn) reviewBtn.removeEventListener('click', onReviewSubmit)
@@ -728,11 +727,20 @@ function ReviewWidget({ locationKey }) {
       window.removeEventListener('hashchange', onHashChange)
       document.body.style.overflow = 'auto'
     }
-  }, [mounted, cfg])
+  }, [mounted, cfg, openReviewPopup])
 
   return (
     <>
-      <div ref={buttonRef} dangerouslySetInnerHTML={{ __html: RLG_BUTTON }} />
+      <div style={{ textAlign: 'center' }}>
+        <button
+          id="rlgOpenPopup"
+          type="button"
+          className="rlg-review-button"
+          onClick={openReviewPopup}
+        >
+          Leave Us A Review
+        </button>
+      </div>
       {mounted
         ? createPortal(
             <div ref={popupRef} dangerouslySetInnerHTML={{ __html: popupHtml }} />,
