@@ -7,7 +7,9 @@
  * the Tampa homepage.
  */
 
-export const STPETE_BASE = '/top-flooring-companies-st-petersburg'
+import { STPETE_BASE } from './site.js'
+
+export { STPETE_BASE }
 
 const svc = (path) => `${STPETE_BASE}/services/${path}`
 const loc = (path) => `${STPETE_BASE}/locations/${path}`

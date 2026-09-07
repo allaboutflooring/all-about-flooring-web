@@ -1,6 +1,6 @@
 import Logo from './Logo'
 import { SITE } from '../data/site'
-import { NAV_SERVICES } from '../data/services'
+import { NAV_SERVICES } from '../data/routeIndex'
 
 export default function Footer({
   location,

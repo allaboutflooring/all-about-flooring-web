@@ -183,10 +183,30 @@ export default function RoomTour() {
       if (!raf) raf = requestAnimationFrame(paint)
     }
 
-    paint()
-    window.addEventListener('scroll', onScroll, { passive: true })
-    window.addEventListener('resize', onScroll, { passive: true })
+    let listening = false
+    const listen = () => {
+      if (listening) return
+      listening = true
+      paint()
+      window.addEventListener('scroll', onScroll, { passive: true })
+      window.addEventListener('resize', onScroll, { passive: true })
+    }
+
+    let io
+    if (typeof IntersectionObserver !== 'undefined') {
+      io = new IntersectionObserver(
+        ([e]) => {
+          if (e.isIntersecting) listen()
+        },
+        { rootMargin: '480px 0px' }
+      )
+      io.observe(track)
+    } else {
+      listen()
+    }
+
     return () => {
+      io?.disconnect()
       cancelAnimationFrame(raf)
       window.removeEventListener('scroll', onScroll)
       window.removeEventListener('resize', onScroll)
@@ -251,7 +271,7 @@ export default function RoomTour() {
                   roomRefs.current[i] = el
                 }}
               >
-                <RoomPhoto r={r} eager={i === 0} />
+                <RoomPhoto r={r} eager={false} />
                 <figcaption className="room-name">{r.name}</figcaption>
                 <div className="room-marks">
                   {r.markers.map((m) => (

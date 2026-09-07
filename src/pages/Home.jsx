@@ -1,3 +1,4 @@
+import { Head } from 'vite-react-ssg'
 import MainLayout from '../layouts/MainLayout'
 import Seo from '../components/Seo'
 import HeroVideo from '../components/HeroVideo'
@@ -57,6 +58,17 @@ export default function Home() {
         title="Top Flooring Contractor in Tampa - All About Flooring"
         description="All About Flooring Tampa Bay Contractors, Flooring Contractor in Tampa for floor installation, replacement, and residential flooring upgrades. Book Now!"
       />
+      <Head>
+        <link
+          rel="preload"
+          as="image"
+          type="image/webp"
+          href="/img/hero-poster-960.webp"
+          imagesrcset="/img/hero-poster-960.webp 960w, /img/hero-poster-1600.webp 1600w"
+          imagesizes="100vw"
+          fetchpriority="high"
+        />
+      </Head>
 
       {/* Mobile alignment: reuse the shared .svcseo-page scope so the homepage's
           otherwise-centred section heads and intros left-align at <=900px, matching

@@ -1,3 +1,5 @@
+import { Head } from 'vite-react-ssg'
+
 /**
  * Inner-page banner. Full-bleed photograph, centred uppercase title,
  * breadcrumb sitting on the bottom-right edge. Used on every page that
@@ -20,6 +22,17 @@ export default function PageHero({
 }) {
   return (
     <section className="pghero" id="top">
+      <Head>
+        <link
+          rel="preload"
+          as="image"
+          type="image/webp"
+          href={`${image}-1000.webp`}
+          imagesrcset={`${image}-1000.webp 1000w, ${image}-1600.webp 1600w`}
+          imagesizes="100vw"
+          fetchpriority="high"
+        />
+      </Head>
       <picture className="pghero-media" aria-hidden={!alt}>
         <source
           type="image/webp"
@@ -27,7 +40,7 @@ export default function PageHero({
           sizes="100vw"
         />
         <img
-          src={`${image}-1600.jpg`}
+          src={`${image}-1000.jpg`}
           srcSet={`${image}-1000.jpg 1000w, ${image}-1600.jpg 1600w`}
           sizes="100vw"
           width="1600"

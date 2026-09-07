@@ -4,7 +4,12 @@ import InlineForm from '../components/InlineForm'
 import ScrollFx from '../components/ScrollFx'
 import ScrollTop from '../components/ScrollTop'
 import { SECOND } from '../data/locations'
-import { STPETE_BASE, STPETE_NAV, STPETE_NAV_SERVICES, STPETE_NAV_AREAS } from '../data/stpete'
+import {
+  STPETE_BASE,
+  STPETE_NAV,
+  STPETE_NAV_SERVICES,
+  STPETE_NAV_AREAS,
+} from '../data/routeIndex'
 
 /**
  * Shell for the St. Petersburg Google listing.

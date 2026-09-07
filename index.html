@@ -9,18 +9,12 @@
       Per-page title, meta description, canonical, icons, theme-color and
       OG/Twitter tags are emitted by src/components/Seo.jsx (react-helmet).
       They are NOT duplicated here on purpose - a static copy would render
-      twice in the prerendered HTML. Only charset, viewport and the preload
-      hints below, which Seo.jsx does not manage, live in this template.
+      twice in the prerendered HTML. Only charset, viewport and the font
+      preloads below, which Seo.jsx does not manage, live in this template.
+
+      The homepage hero poster is preloaded from Home.jsx so inner pages
+      do not spend bandwidth on an image they never paint.
     -->
-    <link
-      rel="preload"
-      as="image"
-      type="image/webp"
-      href="/img/hero-poster-960.webp"
-      imagesrcset="/img/hero-poster-960.webp 960w, /img/hero-poster-1600.webp 1600w"
-      imagesizes="100vw"
-      fetchpriority="high"
-    />
     <link rel="preload" as="font" type="font/woff2" href="/fonts/montserrat-latin-600.woff2" crossorigin />
     <link rel="preload" as="font" type="font/woff2" href="/fonts/poppins-latin-400.woff2" crossorigin />
   </head>

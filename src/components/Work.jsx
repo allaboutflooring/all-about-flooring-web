@@ -30,7 +30,7 @@ function Tile({ w }) {
               sizes={SIZES}
             />
             <img
-              src={`${base}-1200.jpg`}
+              src={`${base}-800.jpg`}
               srcSet={`${base}-800.jpg 800w, ${base}-1200.jpg 1200w`}
               sizes={SIZES}
               alt={w.alt || w.title}
