@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import SectionHead from './SectionHead'
 import { GOOGLE_REVIEWS } from '../data/reviews'
@@ -224,11 +224,20 @@ export default function Reviews({ location, items = GOOGLE_REVIEWS }) {
  * Client-supplied "Leave Us A Review" widget (Review Link Generator).
  *
  * The markup + <style> below are the client's HTML verbatim, rendered via
- * dangerouslySetInnerHTML so every id/class/inline style/inline handler is
- * preserved exactly. The client's <script> is run verbatim in a client-only
- * effect. The widget wires its controls inside a DOMContentLoaded listener,
- * which has already fired in this hydrated SPA, so we re-dispatch the event
- * once after injecting the script (nothing else in the app listens for it).
+ * dangerouslySetInnerHTML so every id/class/inline style is preserved exactly.
+ *
+ * The client's original drop-in wired its controls imperatively inside a
+ * one-shot DOMContentLoaded callback that was re-dispatched synthetically after
+ * the <script> was injected. That bound listeners to a single snapshot of the
+ * DOM, with no re-wiring and no cleanup, so the "Leave Us A Review" button and
+ * the close (×) could end up attached to nothing while the hash-open path -
+ * which resolves elements live on a window listener - kept working.
+ *
+ * Here the same behaviour (open/close, star rating, low-rating feedback flow,
+ * tracking and the #review hash) is wired in a React effect scoped to the
+ * widget's own nodes via refs, with a cleanup that removes every listener. The
+ * effect re-runs on mount/remount, so the controls are always bound to the live
+ * DOM and never wired more than once.
  */
 const RLG_BUTTON = `<!-- Begin Review Link Generator Widget -->
 <!-- Review Button -->
@@ -257,12 +266,12 @@ function rlgPopupHtml(businessName) {
                     <input type="radio" id="rlgStar1" name="rlgRating" value="1"/>
                     <label for="rlgStar1" title="1 star">★</label>
                 </div>
-                <button class="rlg-submit-btn" onclick="rlgSubmitReview()">Submit Review</button>
+                <button class="rlg-submit-btn">Submit Review</button>
             </div>
             <div class="rlg-feedback-form" id="rlgFeedbackForm">
                 <p>Your Feedback</p>
                 <textarea id="rlgFeedbackText" placeholder="Please let us know how we can improve our service..."></textarea>
-                <button class="rlg-submit-btn" onclick="rlgSubmitFeedback()">Submit Feedback</button>
+                <button class="rlg-submit-btn">Submit Feedback</button>
             </div>
             <div class="rlg-thank-you" id="rlgThankYou">
                 <p>✓</p>
@@ -515,163 +524,64 @@ function rlgPopupHtml(businessName) {
 <!-- End Review Link Generator Widget -->`
 }
 
-function rlgScript(businessName, reviewLink) {
-  return `(function() {
-    var rlgReviewLink = "${reviewLink}";
-    var rlgEmail = "allaboutflooring.fl@gmail.com";
-    var rlgBusinessName = "${businessName}";
-    var rlgPlatform = "google";
-    var rlgMinRating = 4;
-    var platformHash = '';
-    var rlgFeedbackEndpoint = "https://reviewtool.gsmarketingroup.com/api/send-feedback";
-    var rlgTrackEndpoint = "https://reviewtool.gsmarketingroup.com/api/track-event";
-    var rlgLastRating = 0;
+const RLG_EMAIL = 'allaboutflooring.fl@gmail.com'
+const RLG_PLATFORM = 'google'
+const RLG_MIN_RATING = 4
+const RLG_FEEDBACK_ENDPOINT = 'https://reviewtool.gsmarketingroup.com/api/send-feedback'
+const RLG_TRACK_ENDPOINT = 'https://reviewtool.gsmarketingroup.com/api/track-event'
+const RLG_PLATFORM_HASH = '#review'
 
-    function rlgResolveEndpoint(url) {
-        if (!url) return '';
-        try {
-            return new URL(url, window.location.origin).toString();
-        } catch {
-            return url;
-        }
-    }
+function rlgResolveEndpoint(url) {
+  if (!url) return ''
+  try {
+    return new URL(url, window.location.origin).toString()
+  } catch {
+    return url
+  }
+}
 
-    var rlgFeedbackEndpointResolved = rlgResolveEndpoint(rlgFeedbackEndpoint);
-    var rlgTrackEndpointResolved = rlgResolveEndpoint(rlgTrackEndpoint);
+function rlgNormalizeHash(hash) {
+  if (!hash) return ''
+  return hash.toLowerCase().split('?')[0]
+}
 
-    function rlgNormalizeHash(hash) {
-        if (!hash) return '';
-        return hash.toLowerCase().split('?')[0];
-    }
+function rlgWidgetUrl() {
+  return window.location.origin + window.location.pathname + RLG_PLATFORM_HASH
+}
 
-    function rlgMaybeOpenFromHash() {
-        var currentHash = rlgNormalizeHash(window.location.hash);
-        if (currentHash === platformHash) {
-            rlgOpenPopup('hash');
-        }
+// Fire-and-forget analytics beacon to the client's review tool. Mirrors the
+// payload the original drop-in sent for widget_open / review_redirect /
+// feedback_submit events.
+function rlgTrackEvent(eventType, cfg, extra) {
+  const endpoint = rlgResolveEndpoint(RLG_TRACK_ENDPOINT)
+  if (!endpoint) return
+  const payload = {
+    businessEmail: RLG_EMAIL,
+    businessName: cfg.businessName,
+    platform: RLG_PLATFORM,
+    eventType,
+    timestamp: new Date().toISOString(),
+    pageUrl: window.location.href,
+    referrer: document.referrer || '',
+    reviewLink: cfg.reviewLink,
+    widgetUrl: rlgWidgetUrl(),
+  }
+  if (extra) Object.assign(payload, extra)
+  try {
+    const body = JSON.stringify(payload)
+    if (navigator.sendBeacon) {
+      navigator.sendBeacon(endpoint, new Blob([body], { type: 'application/json' }))
+      return
     }
-
-    function rlgGetWidgetUrl() {
-        var hash = platformHash || rlgNormalizeHash(window.location.hash);
-        if (!hash) return window.location.href;
-        return window.location.origin + window.location.pathname + hash;
-    }
-
-    function rlgTrackEvent(eventType, extra) {
-        if (!rlgTrackEndpointResolved) return;
-        var payload = {
-            businessEmail: rlgEmail,
-            businessName: rlgBusinessName,
-            platform: rlgPlatform,
-            eventType: eventType,
-            timestamp: new Date().toISOString(),
-            pageUrl: window.location.href,
-            referrer: document.referrer || '',
-            reviewLink: rlgReviewLink,
-            widgetUrl: rlgGetWidgetUrl()
-        };
-        if (extra) {
-            for (var key in extra) {
-                payload[key] = extra[key];
-            }
-        }
-        try {
-            var body = JSON.stringify(payload);
-            if (navigator.sendBeacon) {
-                var blob = new Blob([body], { type: 'application/json' });
-                navigator.sendBeacon(rlgTrackEndpointResolved, blob);
-                return;
-            }
-            fetch(rlgTrackEndpointResolved, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: body,
-                keepalive: true
-            }).catch(function() {});
-        } catch (err) {
-            // ignore tracking errors
-        }
-    }
-
-    function rlgOpenPopup(source) {
-        document.getElementById('rlgPopup').style.display = 'block';
-        document.body.style.overflow = 'hidden';
-        rlgTrackEvent('widget_open', { source: source || 'button' });
-    }
-    function rlgClosePopup() {
-        document.getElementById('rlgPopup').style.display = 'none';
-        document.body.style.overflow = 'auto';
-    }
-    window.rlgSubmitReview = function() {
-        var rating = document.querySelector('#rlgPopup input[name="rlgRating"]:checked');
-        if (!rating) {
-            alert('Please select a rating before submitting.');
-            return;
-        }
-        rlgLastRating = parseInt(rating.value);
-        if (rlgLastRating >= rlgMinRating) {
-            rlgTrackEvent('review_redirect', { rating: rlgLastRating });
-            window.location.href = rlgReviewLink;
-        } else {
-            document.getElementById('rlgFeedbackForm').style.display = 'block';
-            document.querySelector('.rlg-star-rating-wrapper').style.display = 'none';
-            if (document.querySelector('.rlg-positive-reviews')) {
-                document.querySelector('.rlg-positive-reviews').style.display = 'none';
-            }
-        }
-    };
-    window.rlgSubmitFeedback = function() {
-        var feedback = document.getElementById('rlgFeedbackText').value;
-        if (feedback.trim() === '') {
-            alert('Please enter your feedback before submitting.');
-            return;
-        }
-        var payload = {
-            businessName: rlgBusinessName,
-            businessEmail: rlgEmail,
-            customerRating: rlgLastRating || 0,
-            customerFeedback: feedback,
-            platform: rlgPlatform,
-            timestamp: new Date().toISOString()
-        };
-        if (!rlgFeedbackEndpointResolved) {
-            alert('Feedback service is not configured. Please try again later.');
-            return;
-        }
-        fetch(rlgFeedbackEndpointResolved, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload),
-            keepalive: true
-        })
-        .then(function(res) {
-            if (!res.ok) throw new Error('Failed to send feedback');
-            return res.json().catch(function() { return {}; });
-        })
-        .then(function() {
-            rlgTrackEvent('feedback_submit', { rating: rlgLastRating || 0 });
-            document.getElementById('rlgFeedbackForm').style.display = 'none';
-            document.getElementById('rlgThankYou').style.display = 'block';
-        })
-        .catch(function() {
-            alert('Sorry, there was a problem sending your feedback. Please try again.');
-        });
-    };
-    document.addEventListener('DOMContentLoaded', function() {
-        document.getElementById('rlgOpenPopup').addEventListener('click', function() {
-            rlgOpenPopup('button');
-        });
-        document.getElementById('rlgClosePopup').addEventListener('click', rlgClosePopup);
-        document.getElementById('rlgPopup').addEventListener('click', function(e) {
-            if (e.target === this) rlgClosePopup();
-        });
-        // Support #review for Google, platform-specific hashes for others
-        platformHash = '#review';
-        platformHash = platformHash.toLowerCase();
-        rlgMaybeOpenFromHash();
-        window.addEventListener('hashchange', rlgMaybeOpenFromHash);
-    });
-})();`
+    fetch(endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body,
+      keepalive: true,
+    }).catch(() => {})
+  } catch {
+    // ignore tracking errors
+  }
 }
 
 // Per-location popup config. Only the business name and Write-a-Review URL
@@ -689,36 +599,143 @@ const RLG_CONFIG = {
 
 function ReviewWidget({ locationKey }) {
   const cfg = RLG_CONFIG[locationKey] || RLG_CONFIG.main
-  const scriptId = `rlg-widget-script-${locationKey === 'second' ? 'second' : 'main'}`
   // The popup overlay is portalled to <body> so it escapes any ancestor
   // stacking context in the Reviews section and its fixed z-index (999999)
-  // renders above the fixed site header. Gated on `mounted` so it is
+  // renders above the fixed site header. Gated on `mounted` so the portal is
   // client-only (no SSR/hydration mismatch; the portal target is document.body).
   const [mounted, setMounted] = useState(false)
+  const buttonRef = useRef(null)
+  const popupRef = useRef(null)
+  // Memoised so the injected HTML keeps a stable identity across the Reviews
+  // section's re-renders (e.g. the live-reviews fetch), leaving the portalled
+  // popup nodes - and the listeners bound to them below - untouched.
+  const popupHtml = useMemo(() => rlgPopupHtml(cfg.businessName), [cfg.businessName])
+
   useEffect(() => {
     setMounted(true)
   }, [])
 
+  // Wire every control on the widget's own nodes (found via refs, not global
+  // ids), and tear the listeners down on unmount. Re-runs whenever the widget
+  // mounts/remounts, so the button and close (×) are always bound to the live
+  // DOM - no synthetic DOMContentLoaded, no one-shot global script.
   useEffect(() => {
-    // Run only after the portalled overlay is committed to the DOM, so the
-    // widget's DOMContentLoaded wiring finds both #rlgOpenPopup and #rlgPopup.
-    if (!mounted) return
-    if (document.getElementById(scriptId)) return
-    const s = document.createElement('script')
-    s.id = scriptId
-    s.textContent = rlgScript(cfg.businessName, cfg.reviewLink)
-    document.body.appendChild(s)
-    // The widget attaches its click/hash handlers on DOMContentLoaded, which
-    // already fired during hydration. Re-dispatch so its listener runs now.
-    document.dispatchEvent(new Event('DOMContentLoaded'))
-  }, [mounted, scriptId, cfg.businessName, cfg.reviewLink])
+    if (!mounted) return undefined
+    const openWrap = buttonRef.current
+    const root = popupRef.current
+    if (!openWrap || !root) return undefined
+
+    const openBtn = openWrap.querySelector('#rlgOpenPopup')
+    const overlay = root.querySelector('#rlgPopup')
+    const closeBtn = root.querySelector('#rlgClosePopup')
+    if (!openBtn || !overlay || !closeBtn) return undefined
+
+    const starWrap = root.querySelector('.rlg-star-rating-wrapper')
+    const feedbackForm = root.querySelector('#rlgFeedbackForm')
+    const feedbackText = root.querySelector('#rlgFeedbackText')
+    const thankYou = root.querySelector('#rlgThankYou')
+    const positive = root.querySelector('.rlg-positive-reviews')
+    const reviewBtn = starWrap ? starWrap.querySelector('.rlg-submit-btn') : null
+    const feedbackBtn = feedbackForm ? feedbackForm.querySelector('.rlg-submit-btn') : null
+
+    let lastRating = 0
+
+    const openPopup = (source) => {
+      overlay.style.display = 'block'
+      document.body.style.overflow = 'hidden'
+      rlgTrackEvent('widget_open', cfg, { source: source || 'button' })
+    }
+    const closePopup = () => {
+      overlay.style.display = 'none'
+      document.body.style.overflow = 'auto'
+    }
+    const onOpen = () => openPopup('button')
+    const onOverlay = (e) => {
+      if (e.target === overlay) closePopup()
+    }
+    const onReviewSubmit = () => {
+      const checked = overlay.querySelector('input[name="rlgRating"]:checked')
+      if (!checked) {
+        window.alert('Please select a rating before submitting.')
+        return
+      }
+      lastRating = parseInt(checked.value, 10)
+      if (lastRating >= RLG_MIN_RATING) {
+        rlgTrackEvent('review_redirect', cfg, { rating: lastRating })
+        window.location.href = cfg.reviewLink
+      } else {
+        if (feedbackForm) feedbackForm.style.display = 'block'
+        if (starWrap) starWrap.style.display = 'none'
+        if (positive) positive.style.display = 'none'
+      }
+    }
+    const onFeedbackSubmit = () => {
+      const value = feedbackText ? feedbackText.value : ''
+      if (value.trim() === '') {
+        window.alert('Please enter your feedback before submitting.')
+        return
+      }
+      const endpoint = rlgResolveEndpoint(RLG_FEEDBACK_ENDPOINT)
+      if (!endpoint) {
+        window.alert('Feedback service is not configured. Please try again later.')
+        return
+      }
+      fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          businessName: cfg.businessName,
+          businessEmail: RLG_EMAIL,
+          customerRating: lastRating || 0,
+          customerFeedback: value,
+          platform: RLG_PLATFORM,
+          timestamp: new Date().toISOString(),
+        }),
+        keepalive: true,
+      })
+        .then((res) => {
+          if (!res.ok) throw new Error('Failed to send feedback')
+          return res.json().catch(() => ({}))
+        })
+        .then(() => {
+          rlgTrackEvent('feedback_submit', cfg, { rating: lastRating || 0 })
+          if (feedbackForm) feedbackForm.style.display = 'none'
+          if (thankYou) thankYou.style.display = 'block'
+        })
+        .catch(() => {
+          window.alert('Sorry, there was a problem sending your feedback. Please try again.')
+        })
+    }
+    const onHashChange = () => {
+      if (rlgNormalizeHash(window.location.hash) === RLG_PLATFORM_HASH) openPopup('hash')
+    }
+
+    openBtn.addEventListener('click', onOpen)
+    closeBtn.addEventListener('click', closePopup)
+    overlay.addEventListener('click', onOverlay)
+    if (reviewBtn) reviewBtn.addEventListener('click', onReviewSubmit)
+    if (feedbackBtn) feedbackBtn.addEventListener('click', onFeedbackSubmit)
+    window.addEventListener('hashchange', onHashChange)
+    // Open straight away if the page was loaded at /#review.
+    onHashChange()
+
+    return () => {
+      openBtn.removeEventListener('click', onOpen)
+      closeBtn.removeEventListener('click', closePopup)
+      overlay.removeEventListener('click', onOverlay)
+      if (reviewBtn) reviewBtn.removeEventListener('click', onReviewSubmit)
+      if (feedbackBtn) feedbackBtn.removeEventListener('click', onFeedbackSubmit)
+      window.removeEventListener('hashchange', onHashChange)
+      document.body.style.overflow = 'auto'
+    }
+  }, [mounted, cfg])
 
   return (
     <>
-      <div dangerouslySetInnerHTML={{ __html: RLG_BUTTON }} />
+      <div ref={buttonRef} dangerouslySetInnerHTML={{ __html: RLG_BUTTON }} />
       {mounted
         ? createPortal(
-            <div dangerouslySetInnerHTML={{ __html: rlgPopupHtml(cfg.businessName) }} />,
+            <div ref={popupRef} dangerouslySetInnerHTML={{ __html: popupHtml }} />,
             document.body
           )
         : null}
