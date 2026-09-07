@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { Fragment, useCallback, useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import SectionHead from './SectionHead'
 import { GOOGLE_REVIEWS } from '../data/reviews'
@@ -221,87 +221,29 @@ export default function Reviews({ location, items = GOOGLE_REVIEWS }) {
 }
 
 /**
- * Client-supplied "Leave Us A Review" widget (Review Link Generator).
+ * "Leave Us A Review" widget (Review Link Generator), rendered natively in React.
  *
- * The popup markup + <style> below are the client's HTML verbatim, rendered via
- * dangerouslySetInnerHTML so every id/class/inline style is preserved exactly.
+ * Earlier versions injected the button and popup as raw HTML via
+ * dangerouslySetInnerHTML and wired their controls imperatively (querySelector +
+ * addEventListener). React re-creates a dangerouslySetInnerHTML DOM node on
+ * hydration and on any parent re-render (the live-reviews fetch, carousel scroll
+ * state), so those hand-attached listeners ended up on a detached node while the
+ * effect never re-ran to re-wire the replacement - whichever control was bound
+ * to the stale node went dead. The #review path only appeared to work because it
+ * opened the popup in the brief window before the first parent re-render replaced
+ * the popup DOM.
  *
- * The trigger button, however, is a real React <button>. A raw-HTML button
- * injected via dangerouslySetInnerHTML loses its DOM-node identity whenever
- * React re-creates that island (on hydration and on any parent re-render, e.g.
- * the live-reviews fetch), which orphaned a manually-attached click listener
- * and left the visible button dead in production while the close (×) and the
- * #review hash - which act on the client-only portal / a window listener - kept
- * working. Letting React own the button and its onClick keeps the open handler
- * bound across re-renders.
- *
- * The popup's own controls (close/backdrop, star rating, low-rating feedback
- * flow, tracking and the #review hash) live inside the client-only portal and
- * are wired in a React effect scoped via the popup ref, with a cleanup that
- * removes every listener. The effect re-runs on mount/remount.
+ * Here the button AND the entire popup are real React elements. Visibility and
+ * the star / feedback / thank-you views are React state; close, backdrop, star
+ * selection, Submit Review and Submit Feedback are React onClick/onChange
+ * handlers that React keeps bound to the live DOM across every re-render. There
+ * is ONE implementation and ONE set of handlers; the opening method (the button
+ * or #review) only flips the same `open` state. The client's CSS is preserved
+ * verbatim in RLG_STYLE and rendered via a scoped <style> (a <style> is inert,
+ * not an interactive control). The only imperative listener is a single window
+ * `hashchange` (with cleanup) for the #review deep-link.
  */
-function rlgPopupHtml(businessName) {
-  return `<!-- Popup Overlay -->
-<div id="rlgPopup" class="rlg-popup-overlay">
-    <div class="rlg-popup-content">
-        <span id="rlgClosePopup" class="rlg-close">&times;</span>
-        <div class="rlg-review-container">
-            <h3>${businessName}</h3>
-            <p>We value your feedback! Please rate our service.</p>
-            <div class="rlg-star-rating-wrapper">
-                <div class="rlg-star-rating">
-                    <input type="radio" id="rlgStar5" name="rlgRating" value="5"/>
-                    <label for="rlgStar5" title="5 stars">★</label>
-                    <input type="radio" id="rlgStar4" name="rlgRating" value="4"/>
-                    <label for="rlgStar4" title="4 stars">★</label>
-                    <input type="radio" id="rlgStar3" name="rlgRating" value="3"/>
-                    <label for="rlgStar3" title="3 stars">★</label>
-                    <input type="radio" id="rlgStar2" name="rlgRating" value="2"/>
-                    <label for="rlgStar2" title="2 stars">★</label>
-                    <input type="radio" id="rlgStar1" name="rlgRating" value="1"/>
-                    <label for="rlgStar1" title="1 star">★</label>
-                </div>
-                <button class="rlg-submit-btn">Submit Review</button>
-            </div>
-            <div class="rlg-feedback-form" id="rlgFeedbackForm">
-                <p>Your Feedback</p>
-                <textarea id="rlgFeedbackText" placeholder="Please let us know how we can improve our service..."></textarea>
-                <button class="rlg-submit-btn">Submit Feedback</button>
-            </div>
-            <div class="rlg-thank-you" id="rlgThankYou">
-                <p>✓</p>
-                <p>Thank you for your feedback!</p>
-            </div>
-
-            <div class="rlg-positive-reviews">
-                <h3>Our most recent online review:</h3>
-                <div class="rlg-review">
-
-      <div class="rlg-review-avatar rlg-review-avatar-fallback">
-        <span>R</span>
-        <img
-          class="rlg-review-avatar-img"
-          src="https://cdn.jsdelivr.net/gh/yamos28/ReviewWidget26@main/public/reviewer-images/23.jpg"
-          alt="Riley Chen"
-          loading="lazy"
-          referrerpolicy="no-referrer"
-          onerror="this.style.display='none'; this.parentNode.classList.add('rlg-avatar-fallback');"
-        />
-      </div>
-
-                    <div class="rlg-review-content">
-                        <strong>Riley Chen</strong>
-                        <div class="rlg-stars">★★★★★</div>
-                        <span class="rlg-time">2 weeks ago</span>
-                        <p>Easy to work with and very professional. Thanks, All About Flooring Tampa Bay Contractors!</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<style>
+const RLG_STYLE = `
 /* Review Link Generator Styles - Scoped with rlg- prefix */
 .rlg-popup-overlay {
     position: fixed;
@@ -515,9 +457,7 @@ function rlgPopupHtml(businessName) {
     margin: 0;
     line-height: 1.5;
 }
-</style>
-<!-- End Review Link Generator Widget -->`
-}
+`
 
 const RLG_EMAIL = 'allaboutflooring.fl@gmail.com'
 const RLG_PLATFORM = 'google'
@@ -599,135 +539,105 @@ function ReviewWidget({ locationKey }) {
   // renders above the fixed site header. Gated on `mounted` so the portal is
   // client-only (no SSR/hydration mismatch; the portal target is document.body).
   const [mounted, setMounted] = useState(false)
-  const popupRef = useRef(null)
-  // Memoised so the injected popup HTML keeps a stable identity across the
-  // Reviews section's re-renders (e.g. the live-reviews fetch), leaving the
-  // portalled popup nodes - and the listeners bound to them below - untouched.
-  const popupHtml = useMemo(() => rlgPopupHtml(cfg.businessName), [cfg.businessName])
-
-  // Open the popup from the React-owned button. Resolves the overlay live from
-  // the popup ref (safe if React ever re-creates the portal node) and preserves
-  // the widget_open tracking beacon. `source` is a string on the hash path;
-  // when used directly as an onClick handler it receives the event object, so
-  // any non-string value is treated as a button open.
-  const openReviewPopup = useCallback(
-    (source) => {
-      const overlay = popupRef.current?.querySelector('#rlgPopup')
-      if (!overlay) return
-      overlay.style.display = 'block'
-      document.body.style.overflow = 'hidden'
-      rlgTrackEvent('widget_open', cfg, { source: typeof source === 'string' ? source : 'button' })
-    },
-    [cfg]
-  )
+  const [open, setOpen] = useState(false)
+  const [rating, setRating] = useState(0)
+  const [view, setView] = useState('rate') // 'rate' | 'feedback' | 'thankyou'
+  const [feedback, setFeedback] = useState('')
 
   useEffect(() => {
     setMounted(true)
   }, [])
 
-  // Wire the popup's own controls on the portal's live nodes (via the popup
-  // ref) and tear the listeners down on unmount. Re-runs on mount/remount. The
-  // button's open path is handled by React's onClick, so it is not wired here.
+  // Single open path shared by the button (onClick) and the #review deep-link.
+  // `source` is a string on the hash path; as an onClick handler it receives the
+  // event object, so any non-string value is treated as a button open.
+  const openReviewPopup = useCallback(
+    (source) => {
+      setOpen(true)
+      rlgTrackEvent('widget_open', cfg, { source: typeof source === 'string' ? source : 'button' })
+    },
+    [cfg]
+  )
+  const closePopup = useCallback(() => setOpen(false), [])
+
+  // Lock body scroll while the popup is open; restore on close/unmount.
+  useEffect(() => {
+    if (!open) return undefined
+    const prev = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    return () => {
+      document.body.style.overflow = prev || 'auto'
+    }
+  }, [open])
+
+  // The one genuinely imperative listener: the #review deep-link. A window
+  // `hashchange` (plus an initial check) is a real global integration, not a
+  // React-owned control, and it is cleaned up on unmount.
   useEffect(() => {
     if (!mounted) return undefined
-    const root = popupRef.current
-    if (!root) return undefined
-
-    const overlay = root.querySelector('#rlgPopup')
-    const closeBtn = root.querySelector('#rlgClosePopup')
-    if (!overlay || !closeBtn) return undefined
-
-    const starWrap = root.querySelector('.rlg-star-rating-wrapper')
-    const feedbackForm = root.querySelector('#rlgFeedbackForm')
-    const feedbackText = root.querySelector('#rlgFeedbackText')
-    const thankYou = root.querySelector('#rlgThankYou')
-    const positive = root.querySelector('.rlg-positive-reviews')
-    const reviewBtn = starWrap ? starWrap.querySelector('.rlg-submit-btn') : null
-    const feedbackBtn = feedbackForm ? feedbackForm.querySelector('.rlg-submit-btn') : null
-
-    let lastRating = 0
-
-    const closePopup = () => {
-      overlay.style.display = 'none'
-      document.body.style.overflow = 'auto'
-    }
-    const onOverlay = (e) => {
-      if (e.target === overlay) closePopup()
-    }
-    const onReviewSubmit = () => {
-      const checked = overlay.querySelector('input[name="rlgRating"]:checked')
-      if (!checked) {
-        window.alert('Please select a rating before submitting.')
-        return
-      }
-      lastRating = parseInt(checked.value, 10)
-      if (lastRating >= RLG_MIN_RATING) {
-        rlgTrackEvent('review_redirect', cfg, { rating: lastRating })
-        window.location.href = cfg.reviewLink
-      } else {
-        if (feedbackForm) feedbackForm.style.display = 'block'
-        if (starWrap) starWrap.style.display = 'none'
-        if (positive) positive.style.display = 'none'
-      }
-    }
-    const onFeedbackSubmit = () => {
-      const value = feedbackText ? feedbackText.value : ''
-      if (value.trim() === '') {
-        window.alert('Please enter your feedback before submitting.')
-        return
-      }
-      const endpoint = rlgResolveEndpoint(RLG_FEEDBACK_ENDPOINT)
-      if (!endpoint) {
-        window.alert('Feedback service is not configured. Please try again later.')
-        return
-      }
-      fetch(endpoint, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          businessName: cfg.businessName,
-          businessEmail: RLG_EMAIL,
-          customerRating: lastRating || 0,
-          customerFeedback: value,
-          platform: RLG_PLATFORM,
-          timestamp: new Date().toISOString(),
-        }),
-        keepalive: true,
-      })
-        .then((res) => {
-          if (!res.ok) throw new Error('Failed to send feedback')
-          return res.json().catch(() => ({}))
-        })
-        .then(() => {
-          rlgTrackEvent('feedback_submit', cfg, { rating: lastRating || 0 })
-          if (feedbackForm) feedbackForm.style.display = 'none'
-          if (thankYou) thankYou.style.display = 'block'
-        })
-        .catch(() => {
-          window.alert('Sorry, there was a problem sending your feedback. Please try again.')
-        })
-    }
-    const onHashChange = () => {
+    const maybeOpen = () => {
       if (rlgNormalizeHash(window.location.hash) === RLG_PLATFORM_HASH) openReviewPopup('hash')
     }
+    maybeOpen()
+    window.addEventListener('hashchange', maybeOpen)
+    return () => window.removeEventListener('hashchange', maybeOpen)
+  }, [mounted, openReviewPopup])
 
-    closeBtn.addEventListener('click', closePopup)
-    overlay.addEventListener('click', onOverlay)
-    if (reviewBtn) reviewBtn.addEventListener('click', onReviewSubmit)
-    if (feedbackBtn) feedbackBtn.addEventListener('click', onFeedbackSubmit)
-    window.addEventListener('hashchange', onHashChange)
-    // Open straight away if the page was loaded at /#review.
-    onHashChange()
-
-    return () => {
-      closeBtn.removeEventListener('click', closePopup)
-      overlay.removeEventListener('click', onOverlay)
-      if (reviewBtn) reviewBtn.removeEventListener('click', onReviewSubmit)
-      if (feedbackBtn) feedbackBtn.removeEventListener('click', onFeedbackSubmit)
-      window.removeEventListener('hashchange', onHashChange)
-      document.body.style.overflow = 'auto'
+  const submitReview = () => {
+    if (!rating) {
+      window.alert('Please select a rating before submitting.')
+      return
     }
-  }, [mounted, cfg, openReviewPopup])
+    if (rating >= RLG_MIN_RATING) {
+      rlgTrackEvent('review_redirect', cfg, { rating })
+      window.location.href = cfg.reviewLink
+    } else {
+      setView('feedback')
+    }
+  }
+
+  const submitFeedback = () => {
+    if (feedback.trim() === '') {
+      window.alert('Please enter your feedback before submitting.')
+      return
+    }
+    const endpoint = rlgResolveEndpoint(RLG_FEEDBACK_ENDPOINT)
+    if (!endpoint) {
+      window.alert('Feedback service is not configured. Please try again later.')
+      return
+    }
+    fetch(endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        businessName: cfg.businessName,
+        businessEmail: RLG_EMAIL,
+        customerRating: rating || 0,
+        customerFeedback: feedback,
+        platform: RLG_PLATFORM,
+        timestamp: new Date().toISOString(),
+      }),
+      keepalive: true,
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error('Failed to send feedback')
+        return res.json().catch(() => ({}))
+      })
+      .then(() => {
+        rlgTrackEvent('feedback_submit', cfg, { rating: rating || 0 })
+        setView('thankyou')
+      })
+      .catch(() => {
+        window.alert('Sorry, there was a problem sending your feedback. Please try again.')
+      })
+  }
+
+  const onAvatarError = (e) => {
+    e.currentTarget.style.display = 'none'
+    e.currentTarget.parentNode.classList.add('rlg-avatar-fallback')
+  }
+
+  const rateView = view === 'rate'
 
   return (
     <>
@@ -743,7 +653,111 @@ function ReviewWidget({ locationKey }) {
       </div>
       {mounted
         ? createPortal(
-            <div ref={popupRef} dangerouslySetInnerHTML={{ __html: popupHtml }} />,
+            <>
+              <style dangerouslySetInnerHTML={{ __html: RLG_STYLE }} />
+              <div
+                id="rlgPopup"
+                className="rlg-popup-overlay"
+                style={{ display: open ? 'block' : 'none' }}
+                onClick={(e) => {
+                  if (e.target === e.currentTarget) closePopup()
+                }}
+              >
+                <div className="rlg-popup-content">
+                  <span
+                    id="rlgClosePopup"
+                    className="rlg-close"
+                    role="button"
+                    tabIndex={0}
+                    onClick={closePopup}
+                  >
+                    {'×'}
+                  </span>
+                  <div className="rlg-review-container">
+                    <h3>{cfg.businessName}</h3>
+                    <p>We value your feedback! Please rate our service.</p>
+                    <div
+                      className="rlg-star-rating-wrapper"
+                      style={rateView ? undefined : { display: 'none' }}
+                    >
+                      <div className="rlg-star-rating">
+                        {[5, 4, 3, 2, 1].map((n) => (
+                          <Fragment key={n}>
+                            <input
+                              type="radio"
+                              id={`rlgStar${n}`}
+                              name="rlgRating"
+                              value={n}
+                              checked={rating === n}
+                              onChange={() => setRating(n)}
+                            />
+                            <label htmlFor={`rlgStar${n}`} title={`${n} star${n === 1 ? '' : 's'}`}>
+                              ★
+                            </label>
+                          </Fragment>
+                        ))}
+                      </div>
+                      <button className="rlg-submit-btn" type="button" onClick={submitReview}>
+                        Submit Review
+                      </button>
+                    </div>
+                    <div
+                      className="rlg-feedback-form"
+                      id="rlgFeedbackForm"
+                      style={{ display: view === 'feedback' ? 'block' : 'none' }}
+                    >
+                      <p>Your Feedback</p>
+                      <textarea
+                        id="rlgFeedbackText"
+                        placeholder="Please let us know how we can improve our service..."
+                        value={feedback}
+                        onChange={(e) => setFeedback(e.target.value)}
+                      />
+                      <button className="rlg-submit-btn" type="button" onClick={submitFeedback}>
+                        Submit Feedback
+                      </button>
+                    </div>
+                    <div
+                      className="rlg-thank-you"
+                      id="rlgThankYou"
+                      style={{ display: view === 'thankyou' ? 'block' : 'none' }}
+                    >
+                      <p>✓</p>
+                      <p>Thank you for your feedback!</p>
+                    </div>
+
+                    <div
+                      className="rlg-positive-reviews"
+                      style={rateView ? undefined : { display: 'none' }}
+                    >
+                      <h3>Our most recent online review:</h3>
+                      <div className="rlg-review">
+                        <div className="rlg-review-avatar rlg-review-avatar-fallback">
+                          <span>R</span>
+                          <img
+                            className="rlg-review-avatar-img"
+                            src="https://cdn.jsdelivr.net/gh/yamos28/ReviewWidget26@main/public/reviewer-images/23.jpg"
+                            alt="Riley Chen"
+                            loading="lazy"
+                            referrerPolicy="no-referrer"
+                            onError={onAvatarError}
+                          />
+                        </div>
+                        <div className="rlg-review-content">
+                          <strong>Riley Chen</strong>
+                          <div className="rlg-stars">★★★★★</div>
+                          <span className="rlg-time">2 weeks ago</span>
+                          <p>
+                            Easy to work with and very professional. Thanks, All About Flooring
+                            Tampa Bay Contractors!
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </>,
             document.body
           )
         : null}

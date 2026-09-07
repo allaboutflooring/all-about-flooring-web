@@ -25,6 +25,13 @@ const ALLOWED = new Set([
   'playing',      // HeroVideo state inside className expression
   'introClass',   // AreaPage intro section class chosen by area.seo
 
+  // Review popup (src/components/Reviews.jsx) — client-supplied widget styled by
+  // its own scoped <style> block (RLG_STYLE), not global.css/tokens.css, so the
+  // base-breakpoint scan can't see the rules here.
+  'rlg-popup-overlay', 'rlg-popup-content', 'rlg-close', 'rlg-star-rating-wrapper',
+  'rlg-star-rating', 'rlg-submit-btn', 'rlg-feedback-form', 'rlg-thank-you',
+  'rlg-positive-reviews', 'rlg-review', 'rlg-review-avatar', 'rlg-review-avatar-fallback',
+  'rlg-review-avatar-img', 'rlg-review-content', 'rlg-stars', 'rlg-time',
 ])
 
 const css = readFileSync('src/styles/global.css', 'utf8') +
