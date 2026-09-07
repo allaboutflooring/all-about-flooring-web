@@ -64,7 +64,7 @@ function Card({ s, i, cols = 4, open, onToggle }) {
     >
       <picture className="svcx-bg" aria-hidden="true">
         <source type="image/webp" srcSet={`/img/services/bg/${s.key}.webp${bgQ}`} />
-        <img src={`/img/services/bg/${s.key}.jpg${bgQ}`} alt="" loading="lazy" decoding="async" />
+        <img src={`/img/services/bg/${s.key}.jpg${bgQ}`} alt="" width="800" height="600" loading="lazy" decoding="async" />
       </picture>
 
       <Wrap className="svcx-in" {...(s.href ? { href: s.href } : {})}>

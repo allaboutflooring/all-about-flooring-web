@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import SectionHead from './SectionHead'
-import { areaPageHref } from '../data/locations'
+import { areaPageHref } from '../data/routeIndex'
 
 function AreaName({ name, hrefFor }) {
   const href = hrefFor(name)

@@ -31,11 +31,28 @@ export default defineConfig(({ mode }) => {
       outDir: 'dist',
       // Long-cache hashed assets; HTML stays uncached so Google always sees fresh markup.
       assetsDir: 'assets',
+      target: 'es2020',
+      modulePreload: { polyfill: false },
+      rollupOptions: {
+        output: {
+          manualChunks(id) {
+            if (id.includes('node_modules/react-dom') || id.includes('node_modules/react-router') || id.includes('node_modules/react/')) {
+              return 'vendor'
+            }
+          },
+        },
+      },
     },
     ssgOptions: {
       formatting: 'minify',
       // Every route in src/routes.jsx is written to disk as real HTML at its own slug.
       dirStyle: 'nested',
+      // Inline above-the-fold CSS; the rest of global.css loads after first paint.
+      beastiesOptions: {
+        preload: 'media',
+        fonts: false,
+        preloadFonts: false,
+      },
     },
   }
 })

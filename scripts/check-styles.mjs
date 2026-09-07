@@ -20,6 +20,7 @@ const ALLOWED = new Set([
   'active',       // RoomTour state inside className expression
   'locpg',        // section hook; children (.locpg-frame) carry the styling
   'abpg-block',   // section hook; children (.abpg-grid) carry the styling
+  'ftr-col',      // footer grid item hook; modifiers carry the styling
   'onClass', 'marked', 'on', 'menuClass',
   'playing',      // HeroVideo state inside className expression
   'introClass',   // AreaPage intro section class chosen by area.seo

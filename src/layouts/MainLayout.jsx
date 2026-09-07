@@ -3,8 +3,8 @@ import Footer from '../components/Footer'
 import InlineForm from '../components/InlineForm'
 import ScrollFx from '../components/ScrollFx'
 import ScrollTop from '../components/ScrollTop'
-import { MAIN, NAV_AREAS } from '../data/locations'
-import { NAV_SERVICES } from '../data/services'
+import { MAIN } from '../data/locations'
+import { NAV_AREAS, NAV_SERVICES } from '../data/routeIndex'
 import { ABOUT_PATH, SITE } from '../data/site'
 
 export const MAIN_NAV = [

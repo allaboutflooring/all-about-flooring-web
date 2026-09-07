@@ -8,7 +8,8 @@ import Reviews from '../components/Reviews'
 import Cta from '../components/Cta'
 import ServiceArea from '../components/ServiceArea'
 import LocationMap from '../components/LocationMap'
-import { AREA_PAGES, MAIN, MAIN_AREA_INTRO } from '../data/locations'
+import { MAIN, MAIN_AREA_INTRO } from '../data/locations'
+import { AREA_PAGES } from '../data/areaPages'
 import { CTA_MID, CTA_LATE } from '../data/cta'
 
 function Check() {

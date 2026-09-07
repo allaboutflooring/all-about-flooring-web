@@ -16,3 +16,6 @@ export const SITE = {
 }
 
 export const ABOUT_PATH = '/premier-flooring-company-tampa'
+
+/** Indexed St. Petersburg landing slug. Also re-exported from stpete.js. */
+export const STPETE_BASE = '/top-flooring-companies-st-petersburg'

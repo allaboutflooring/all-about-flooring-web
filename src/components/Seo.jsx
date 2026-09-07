@@ -1,11 +1,10 @@
 import { Head } from 'vite-react-ssg'
-import { SITE } from '../data/site'
+import { SITE, STPETE_BASE } from '../data/site'
 import {
   LOCAL_BUSINESS_SCHEMA,
   ST_PETE_LOCAL_BUSINESS_SCHEMA,
   ORGANIZATION_SCHEMA,
 } from '../data/businessSchema'
-import { STPETE_BASE } from '../data/stpete'
 
 /**
  * Per-page <head> + structured data.
