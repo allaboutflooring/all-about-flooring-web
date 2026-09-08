@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import SelectField from './SelectField'
 import { SERVICE_OPTIONS } from '../data/content'
+import { leadLocationLabel } from '../data/locations'
 import { formatUsPhone, isValidUsPhone, isValidEmail, phoneDigits } from '../lib/validation'
 
 const EMPTY = { name: '', email: '', phone: '', service: [], message: '' }
@@ -61,10 +62,15 @@ export default function InlineForm({
       // Invalid: block the submit and move focus to the first bad field.
       ev.preventDefault()
       document.getElementById(`qf-${first}`)?.focus()
+      return
     }
     // Valid: do NOT preventDefault — Netlify Forms handles the native POST and
     // the browser navigates to Netlify's submission-received response. No inline
     // success state is shown, so "Thanks" can never appear without a real POST.
+    // Ensure the message is never blank in the POST, so the lead email always
+    // carries a Message line rather than silently omitting it.
+    const msg = ev.currentTarget.elements.message
+    if (msg && !msg.value.trim()) msg.value = 'No message provided'
   }
 
   return (
@@ -91,7 +97,7 @@ export default function InlineForm({
             noValidate
           >
             <input type="hidden" name="form-name" value={formName} />
-            <input type="hidden" name="location" value={location.key} />
+            <input type="hidden" name="location" value={leadLocationLabel(location)} />
             <p hidden>
               <label>Leave blank <input name="bot-field" /></label>
             </p>
@@ -148,7 +154,7 @@ export default function InlineForm({
               {errors.service && <span className="qform-err" id="qf-service-err" role="alert">{errors.service}</span>}
             </div>
 
-            {showMessage && (
+            {showMessage ? (
               <div className="qform-f">
                 <label className="vh" htmlFor="qf-message">Message</label>
                 <textarea
@@ -160,6 +166,13 @@ export default function InlineForm({
                   placeholder="Message (optional)"
                 />
               </div>
+            ) : (
+              // Keep a `message` field in this form's schema even when it isn't
+              // shown, so Netlify registers `message` for lead-form names shared
+              // with the hero ConsultForm (which does collect it). Without this,
+              // the intersection of same-named forms drops the field and the
+              // customer's message never reaches the notification email.
+              <input type="hidden" name="message" value="No message provided" />
             )}
 
             <button className="qform-btn" type="submit">Get my quote</button>

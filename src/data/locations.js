@@ -135,6 +135,16 @@ export const SECOND = {
 
 export const LOCATIONS = { main: MAIN, second: SECOND }
 
+/**
+ * Human-readable "City, ST" label for a location record. Used as the value of
+ * the hidden `location` field in the lead forms so the notification email shows
+ * the real city (e.g. "Tampa, FL", "St. Petersburg, FL") instead of the internal
+ * key ("main" / "second"). Falls back to the listing name or key if a record
+ * ever lacks city/region, so it never emits an empty value.
+ */
+export const leadLocationLabel = (l) =>
+  [l?.city, l?.region].filter(Boolean).join(', ') || l?.name || l?.key || ''
+
 export const fullAddress = (l) =>
   [l.street, [l.city, l.region].filter(Boolean).join(', '), l.postal]
     .filter((p) => p && !String(p).startsWith('['))
