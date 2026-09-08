@@ -3,10 +3,9 @@ import { Arrow } from './Icons'
 import SelectField from './SelectField'
 import SampleFan from './SampleFan'
 import { SERVICE_OPTIONS } from '../data/content'
-import { leadLocationLabel } from '../data/locations'
 import { formatUsPhone, isValidUsPhone, isValidEmail, phoneDigits } from '../lib/validation'
 
-const EMPTY = { name: '', email: '', phone: '', service: [], message: '' }
+const EMPTY = { name: '', email: '', phone: '', city: '', service: [], message: '' }
 
 /**
  * Lead capture directly under the hero.
@@ -45,6 +44,7 @@ export default function ConsultForm({
         phoneDigits(vals.phone).length < 10
           ? 'A US number needs 10 digits.'
           : 'That is not a valid US number.'
+    if (!vals.city.trim()) e.city = 'Please enter your city.'
     if (!vals.service || (Array.isArray(vals.service) && vals.service.length === 0) || vals.service === '')
       e.service = 'Please choose the service you need.'
     return e
@@ -78,6 +78,9 @@ export default function ConsultForm({
     // always carries a Message line rather than silently omitting it.
     const msg = ev.currentTarget.elements.message
     if (msg && !msg.value.trim()) msg.value = 'No message provided'
+    // Submit the customer's city without surrounding whitespace.
+    const cityEl = ev.currentTarget.elements.city
+    if (cityEl) cityEl.value = cityEl.value.trim()
   }
 
   const field = (name) => ({
@@ -112,7 +115,6 @@ export default function ConsultForm({
               noValidate
             >
               <input type="hidden" name="form-name" value={formName} />
-              <input type="hidden" name="location" value={leadLocationLabel(location)} />
               <p hidden>
                 <label>Leave blank <input name="bot-field" /></label>
               </p>
@@ -147,6 +149,17 @@ export default function ConsultForm({
                   required
                 />
                 <Err name="phone" />
+              </div>
+
+              <div className={`cf-f${errors.city ? ' has-err' : ''}`}>
+                <label className="vh" htmlFor="cf-city">City</label>
+                <input
+                  {...field('city')}
+                  placeholder="City *"
+                  autoComplete="address-level2"
+                  required
+                />
+                <Err name="city" />
               </div>
 
               <div className={`cf-f cf-sel${errors.service ? ' has-err' : ''}`}>

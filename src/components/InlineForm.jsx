@@ -1,10 +1,9 @@
 import { useState } from 'react'
 import SelectField from './SelectField'
 import { SERVICE_OPTIONS } from '../data/content'
-import { leadLocationLabel } from '../data/locations'
 import { formatUsPhone, isValidUsPhone, isValidEmail, phoneDigits } from '../lib/validation'
 
-const EMPTY = { name: '', email: '', phone: '', service: [], message: '' }
+const EMPTY = { name: '', email: '', phone: '', city: '', service: [], message: '' }
 
 /**
  * Closing band: a single-row form on a solid brand field.
@@ -42,6 +41,7 @@ export default function InlineForm({
     if (!vals.phone.trim()) e.phone = 'Enter your phone number.'
     else if (!isValidUsPhone(vals.phone))
       e.phone = phoneDigits(vals.phone).length < 10 ? 'Needs 10 digits.' : 'Not a valid US number.'
+    if (!vals.city.trim()) e.city = 'Enter your city.'
     if (!vals.service || (Array.isArray(vals.service) && vals.service.length === 0) || vals.service === '')
       e.service = 'Choose a service.'
     return e
@@ -71,6 +71,9 @@ export default function InlineForm({
     // carries a Message line rather than silently omitting it.
     const msg = ev.currentTarget.elements.message
     if (msg && !msg.value.trim()) msg.value = 'No message provided'
+    // Submit the customer's city without surrounding whitespace.
+    const cityEl = ev.currentTarget.elements.city
+    if (cityEl) cityEl.value = cityEl.value.trim()
   }
 
   return (
@@ -97,7 +100,6 @@ export default function InlineForm({
             noValidate
           >
             <input type="hidden" name="form-name" value={formName} />
-            <input type="hidden" name="location" value={leadLocationLabel(location)} />
             <p hidden>
               <label>Leave blank <input name="bot-field" /></label>
             </p>
@@ -135,6 +137,17 @@ export default function InlineForm({
                 aria-describedby={errors.phone ? 'qf-phone-err' : undefined}
               />
               {errors.phone && <span className="qform-err" id="qf-phone-err" role="alert">{errors.phone}</span>}
+            </div>
+
+            <div className={`qform-f${errors.city ? ' has-err' : ''}`}>
+              <label className="vh" htmlFor="qf-city">City</label>
+              <input
+                id="qf-city" name="city" value={v.city} onChange={set('city')}
+                placeholder="City" autoComplete="address-level2" required
+                aria-invalid={errors.city ? 'true' : undefined}
+                aria-describedby={errors.city ? 'qf-city-err' : undefined}
+              />
+              {errors.city && <span className="qform-err" id="qf-city-err" role="alert">{errors.city}</span>}
             </div>
 
             <div className={`qform-f${errors.service ? ' has-err' : ''}`}>
