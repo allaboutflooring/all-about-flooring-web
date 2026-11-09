@@ -1,6 +1,15 @@
 {
   "posts": [
     {
+      "id": 400415991,
+      "slug": "lvp-engineered-hardwood-homes",
+      "title": "LVP or Engineered Hardwood for Tampa Homes",
+      "excerpt": "A Tampa-focused comparison of luxury vinyl plank (LVP) and engineered hardwood to help you pick the right floor by room, budget, and local moisture risk.",
+      "url": "http://flooringcontractorstampafl.com/blogs/lvp-engineered-hardwood-homes/",
+      "publishedAt": "2026-11-09T15:30:48.396Z",
+      "image": "/blogs-images/uploads/1-character-hickory-floor-800.jpg"
+    },
+    {
       "id": 641617052,
       "slug": "during-engineered-hardwood-installation",
       "title": "What to Expect During Engineered Hardwood Installation",
@@ -17,15 +26,6 @@
       "url": "http://flooringcontractorstampafl.com/blogs/signs-hardwood-floors-refinishing/",
       "publishedAt": "2026-11-23T14:58:00.000Z",
       "image": "/blogs-images/uploads/1-hardwood-living-teal-door-800.jpg"
-    },
-    {
-      "id": 400415991,
-      "slug": "lvp-engineered-hardwood-homes",
-      "title": "LVP or Engineered Hardwood for Tampa Homes",
-      "excerpt": "A Tampa-focused comparison of luxury vinyl plank (LVP) and engineered hardwood to help you pick the right floor by room, budget, and local moisture risk.",
-      "url": "http://flooringcontractorstampafl.com/blogs/lvp-engineered-hardwood-homes/",
-      "publishedAt": "2026-11-09T15:20:00.000Z",
-      "image": "/blogs-images/uploads/1-character-hickory-floor-800.jpg"
     }
   ],
   "ownedListing": true
