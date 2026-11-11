@@ -12,6 +12,10 @@ export const SITE = {
   socials: {
     facebook: 'https://www.facebook.com/profile.php?id=61553684777260',
     instagram: 'https://www.instagram.com/allaboutflooringtb',
+    youtube: 'https://www.youtube.com/channel/UCJBLLWLkJWTr4Y9oyBHDqvQ',
+    x: 'https://twitter.com/allaboutfloorfl',
+    linkedin: 'https://www.linkedin.com/company/all-about-flooring-tampa-bay-contractors/',
+    pinterest: 'https://www.pinterest.com/allaboutflooringfl/',
   },
 }
 

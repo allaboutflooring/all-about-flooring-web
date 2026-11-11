@@ -1,6 +1,7 @@
 import Logo from './Logo'
 import { SITE } from '../data/site'
 import { NAV_SERVICES } from '../data/routeIndex'
+import { SocialLinks } from './Icons'
 
 export default function Footer({
   location,
@@ -11,7 +12,7 @@ export default function Footer({
   areaLinks,
 }) {
   const services = serviceLinks || NAV_SERVICES
-  const { facebook, instagram } = location.socials || SITE.socials
+  const socials = location.socials || SITE.socials
   const cityLine = [location.city, location.region].filter(Boolean).join(', ')
   const second = variant === 'second'
   const cls = ['ftr', second ? 'ftr--second' : ''].filter(Boolean).join(' ')
@@ -25,13 +26,7 @@ export default function Footer({
           <div className="ftr-col ftr-col--brand">
             <Logo to={homeHref} sub="FLOORING CONTRACTOR" alt={`${location.name} logo`} />
             <p className="ftr-blurb">{SITE.tagline}</p>
-            {facebook && instagram && (
-              <p className="ftr-socials">
-                <a href={facebook} target="_blank" rel="noreferrer">Facebook</a>
-                {' · '}
-                <a href={instagram} target="_blank" rel="noreferrer">Instagram</a>
-              </p>
-            )}
+            <SocialLinks socials={socials} className="ftr-socials" label={`${location.name} on social media`} />
           </div>
 
           <div className="ftr-col ftr-col--services">

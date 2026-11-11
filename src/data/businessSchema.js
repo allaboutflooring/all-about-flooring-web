@@ -208,9 +208,12 @@ export const LOCAL_BUSINESS_SCHEMA = {
   ],
   sameAs: [
     'https://www.facebook.com/profile.php?id=61553684777260',
+    'https://www.instagram.com/allaboutflooringtb',
+    'https://www.youtube.com/channel/UCJBLLWLkJWTr4Y9oyBHDqvQ',
+    'https://twitter.com/allaboutfloorfl',
+    'https://www.linkedin.com/company/all-about-flooring-tampa-bay-contractors/',
     'https://www.pinterest.com/allaboutflooringfl/',
     'https://www.tiktok.com/@allaboutflooringtampa',
-    'https://www.linkedin.com/company/all-about-flooring-tampa-bay-contractors/',
   ],
 }
 
@@ -422,8 +425,11 @@ export const ORGANIZATION_SCHEMA = {
     'All About Flooring Tampa Bay Contractors provides professional flooring services in Tampa, Florida. Our flooring services include flooring installation, hardwood floor refinishing and sanding, engineered hardwood installation, floor polyurethane coatings, tile installation, bathroom tile and backsplash installation, kitchen design and installation, and cabinet and countertop design and installation.',
   sameAs: [
     'https://www.facebook.com/profile.php?id=61553684777260',
+    'https://www.instagram.com/allaboutflooringtb',
+    'https://www.youtube.com/channel/UCJBLLWLkJWTr4Y9oyBHDqvQ',
+    'https://twitter.com/allaboutfloorfl',
+    'https://www.linkedin.com/company/all-about-flooring-tampa-bay-contractors/',
     'https://www.pinterest.com/allaboutflooringfl/',
     'https://www.tiktok.com/@allaboutflooringtampa',
-    'https://www.linkedin.com/company/all-about-flooring-tampa-bay-contractors/',
   ],
 }

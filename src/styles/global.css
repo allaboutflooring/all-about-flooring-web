@@ -1172,7 +1172,26 @@ html.nav-open body {
 .ftr a { color: var(--muted); text-decoration: none; font-size: 15px; }
 .ftr a:hover { color: var(--oak); }
 .ftr-blurb { color: var(--muted); font-size: 15px; max-width: 34ch; margin-top: 18px; }
-.ftr-socials { margin-top: 14px; font-size: 13px; }
+.ftr-socials {
+  margin-top: 18px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.ftr-socials li { margin-bottom: 0; }
+.ftr-socials a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  color: var(--muted);
+  transition: color 0.2s var(--ease), border-color 0.2s var(--ease), background 0.2s var(--ease);
+}
+.ftr-socials a:hover { color: var(--oak); border-color: var(--oak); background: var(--tan-soft); }
+.ico-brand { display: block; }
 .ftr-nap { font-family: var(--f-mono); font-size: 13.5px; color: var(--muted); line-height: 1.75; font-style: normal; }
 .ftr-bar {
   display: flex;
@@ -3374,6 +3393,39 @@ main { position: relative; z-index: 0; isolation: isolate; }
 
 @media (prefers-reduced-motion: reduce) {
   .ctp-way-tile { transition: none; }
+}
+
+/* ── Contact: "Connect with us" social row ─────────────────────────── */
+.ctp-connect .sec-hd { margin-bottom: 0; }
+.ctp-socials {
+  margin-top: clamp(24px, 3vw, 34px);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+.ctp-socials li { margin: 0; }
+.ctp-socials a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  color: var(--ink);
+  background: var(--graphite-2);
+  transition: color 0.2s var(--ease), border-color 0.2s var(--ease), background 0.2s var(--ease), transform 0.2s var(--ease);
+}
+.ctp-socials a:hover {
+  color: var(--oak);
+  border-color: var(--oak);
+  background: var(--tan-soft);
+  transform: translateY(-2px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ctp-socials a { transition: none; }
+  .ctp-socials a:hover { transform: none; }
 }
 
 /* ── Service SEO content: feature grid + centred prose ──────────────

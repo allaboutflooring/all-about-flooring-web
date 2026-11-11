@@ -5,6 +5,7 @@ import Tick from '../components/Tick'
 import ConsultForm from '../components/ConsultForm'
 import MapPanel from '../components/MapPanel'
 import SectionHead from '../components/SectionHead'
+import { SocialLinks } from '../components/Icons'
 import { CONTACT_PAGE } from '../data/contact'
 import { MAIN } from '../data/locations'
 import { SITE } from '../data/site'
@@ -86,6 +87,21 @@ export default function ContactPage() {
               ))}
             </ul>
           </div>
+        </div>
+      </section>
+
+      <section className="sec ctp-connect" id="connect">
+        <div className="wrap">
+          <header className="sec-hd">
+            <Tick>Stay in touch</Tick>
+            <h2>Connect with us</h2>
+            <p>Follow along for recent projects, finishes, and before-and-afters across Tampa Bay.</p>
+          </header>
+          <SocialLinks
+            socials={SITE.socials}
+            className="ctp-socials"
+            label="All About Flooring on social media"
+          />
         </div>
       </section>
 
