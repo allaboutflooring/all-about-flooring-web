@@ -3402,8 +3402,10 @@ main { position: relative; z-index: 0; isolation: isolate; }
   display: flex;
   flex-wrap: wrap;
   gap: 14px;
+  padding: 0;
+  list-style: none;
 }
-.ctp-socials li { margin: 0; }
+.ctp-socials li { margin: 0; list-style: none; }
 .ctp-socials a {
   display: inline-flex;
   align-items: center;
